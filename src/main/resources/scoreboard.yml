@@ -1,0 +1,15 @@
+enabled: true
+title: "&5&lEND WAR"
+lines:
+  - "&7Phase: &f%phase%"
+  - "&7Holder: &d%holder%"
+  - ""
+  - "&7Kills: &f%kills%"
+  - "&7Streak: &f%streak%"
+  - "&7Team: %team_color%%team%"
+  - "&7Team Kills: &f%team_kills%"
+  - "&7Members: &f%members_count%"
+  - "&71. &f%member_1% &c%member_1_health%"
+  - "&72. &f%member_2% &c%member_2_health%"
+  - "&73. &f%member_3% &c%member_3_health%"
+  - "&74. &f%member_4% &c%member_4_health%"

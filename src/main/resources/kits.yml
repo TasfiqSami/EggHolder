@@ -1,0 +1,1124 @@
+kits:
+  duelist:
+    enabled: true
+    name: "&d&lDuelist"
+    icon: NETHERITE_SWORD
+    description:
+      - "&7Fast pressure kit for straight fights."
+      - "&7Built for chasing the EggHolder down."
+    effects:
+      - type: SPEED
+        duration: 72000
+        amplifier: 0
+        ambient: false
+        particles: true
+        icon: true
+    items:
+      helmet:
+        enabled: true
+        material: NETHERITE_HELMET
+        amount: 1
+        slot: helmet
+        name: "&dDuelist Helm"
+        lore:
+          - "&7Light, sharp, and built for brawls."
+        enchantments:
+          PROTECTION: 3
+          UNBREAKING: 3
+      chestplate:
+        enabled: true
+        material: NETHERITE_CHESTPLATE
+        amount: 1
+        slot: chestplate
+        name: "&dDuelist Chestplate"
+        lore:
+          - "&7Stay aggressive without folding."
+        enchantments:
+          PROTECTION: 3
+          UNBREAKING: 3
+      leggings:
+        enabled: true
+        material: NETHERITE_LEGGINGS
+        amount: 1
+        slot: leggings
+        name: "&dDuelist Leggings"
+        lore:
+          - "&7Enough defense to keep swinging."
+        enchantments:
+          PROTECTION: 3
+          UNBREAKING: 3
+      boots:
+        enabled: true
+        material: NETHERITE_BOOTS
+        amount: 1
+        slot: boots
+        name: "&dDuelist Boots"
+        lore:
+          - "&7Close gaps and keep pressure."
+        enchantments:
+          PROTECTION: 3
+          FEATHER_FALLING: 4
+          UNBREAKING: 3
+      sword:
+        enabled: true
+        material: NETHERITE_SWORD
+        amount: 1
+        slot: 0
+        name: "&dDuelist Blade"
+        lore:
+          - "&7Pressure weapon for aggressive players."
+        enchantments:
+          SHARPNESS: 4
+      shield:
+        enabled: true
+        material: SHIELD
+        amount: 1
+        slot: offhand
+        name: "&fParry Guard"
+        lore:
+          - "&7Win the trade and keep pushing."
+      pearls:
+        enabled: true
+        material: ENDER_PEARL
+        amount: 4
+        slot: 1
+        name: "&5Blink Pearls"
+        lore:
+          - "&7Take space and chase kills."
+      gaps:
+        enabled: true
+        material: GOLDEN_APPLE
+        amount: 3
+        slot: 2
+        name: "&6Rush Apples"
+        lore:
+          - "&7Reset and dive back in."
+      webs:
+        enabled: true
+        material: COBWEB
+        amount: 4
+        slot: 3
+        name: "&7Catch Nets"
+        lore:
+          - "&7Pin fleeing targets in place."
+      steaks:
+        enabled: true
+        material: COOKED_BEEF
+        amount: 16
+        slot: 8
+        name: "&6Fight Rations"
+        lore:
+          - "&7Stay fed through long chases."
+
+  titan:
+    enabled: true
+    name: "&6&lTitan"
+    icon: MACE
+    description:
+      - "&7Frontline brawler with heavy sustain."
+      - "&7Best when leading team fights."
+    effects:
+      - type: RESISTANCE
+        duration: 72000
+        amplifier: 0
+        ambient: false
+        particles: true
+        icon: true
+    items:
+      helmet:
+        enabled: true
+        material: NETHERITE_HELMET
+        amount: 1
+        slot: helmet
+        name: "&6Titan Crown"
+        lore:
+          - "&7Lead the charge into chaos."
+        enchantments:
+          PROTECTION: 4
+          UNBREAKING: 3
+      chestplate:
+        enabled: true
+        material: NETHERITE_CHESTPLATE
+        amount: 1
+        slot: chestplate
+        name: "&6Titan Plate"
+        lore:
+          - "&7Absorb pressure for the team."
+        enchantments:
+          PROTECTION: 4
+          UNBREAKING: 3
+      leggings:
+        enabled: true
+        material: NETHERITE_LEGGINGS
+        amount: 1
+        slot: leggings
+        name: "&6Titan Leggings"
+        lore:
+          - "&7Made to stand inside the brawl."
+        enchantments:
+          PROTECTION: 4
+          UNBREAKING: 3
+      boots:
+        enabled: true
+        material: NETHERITE_BOOTS
+        amount: 1
+        slot: boots
+        name: "&6Titan Greaves"
+        lore:
+          - "&7Hold the bridge and never fold."
+        enchantments:
+          PROTECTION: 4
+          FEATHER_FALLING: 4
+          UNBREAKING: 3
+      mace:
+        enabled: true
+        material: MACE
+        amount: 1
+        slot: 0
+        name: "&6Titan Mace"
+        lore:
+          - "&7Built for brutal slam pressure."
+        enchantments:
+          DENSITY: 2
+          BREACH: 2
+      shield:
+        enabled: true
+        material: SHIELD
+        amount: 1
+        slot: offhand
+        name: "&6Titan Bulwark"
+        lore:
+          - "&7Anchor the front line for your team."
+      gaps:
+        enabled: true
+        material: GOLDEN_APPLE
+        amount: 5
+        slot: 1
+        name: "&6Titan Rations"
+        lore:
+          - "&7Stay in the fight longer."
+      totem:
+        enabled: true
+        material: TOTEM_OF_UNDYING
+        amount: 1
+        slot: 2
+        name: "&eLast Stand Totem"
+        lore:
+          - "&7A backup life for brutal clashes."
+      wind:
+        enabled: true
+        material: WIND_CHARGE
+        amount: 3
+        slot: 3
+        name: "&fShock Charges"
+        lore:
+          - "&7Create space before the next slam."
+      steaks:
+        enabled: true
+        material: COOKED_BEEF
+        amount: 16
+        slot: 8
+        name: "&6Titan Meals"
+        lore:
+          - "&7You are supposed to be hard to kill."
+
+  scout:
+    enabled: true
+    name: "&b&lScout"
+    icon: CROSSBOW
+    description:
+      - "&7Rotations, picks, and fast support."
+      - "&7Perfect for tracking and repositioning."
+    effects:
+      - type: SPEED
+        duration: 72000
+        amplifier: 1
+        ambient: false
+        particles: true
+        icon: true
+      - type: JUMP_BOOST
+        duration: 72000
+        amplifier: 0
+        ambient: false
+        particles: true
+        icon: true
+    items:
+      helmet:
+        enabled: true
+        material: NETHERITE_HELMET
+        amount: 1
+        slot: helmet
+        name: "&bScout Hood"
+        lore:
+          - "&7Vision and movement over brute force."
+        enchantments:
+          PROTECTION: 3
+          RESPIRATION: 3
+          UNBREAKING: 3
+      chestplate:
+        enabled: true
+        material: NETHERITE_CHESTPLATE
+        amount: 1
+        slot: chestplate
+        name: "&bScout Chestplate"
+        lore:
+          - "&7Enough armor to keep rotating."
+        enchantments:
+          PROTECTION: 3
+          UNBREAKING: 3
+      leggings:
+        enabled: true
+        material: NETHERITE_LEGGINGS
+        amount: 1
+        slot: leggings
+        name: "&bScout Leggings"
+        lore:
+          - "&7Flexibility without feeling naked."
+        enchantments:
+          PROTECTION: 3
+          SWIFT_SNEAK: 2
+          UNBREAKING: 3
+      boots:
+        enabled: true
+        material: NETHERITE_BOOTS
+        amount: 1
+        slot: boots
+        name: "&bScout Boots"
+        lore:
+          - "&7Escape bad jumps and bad calls."
+        enchantments:
+          PROTECTION: 3
+          FEATHER_FALLING: 4
+          SOUL_SPEED: 3
+          UNBREAKING: 3
+      crossbow:
+        enabled: true
+        material: CROSSBOW
+        amount: 1
+        slot: 0
+        name: "&bScout Repeater"
+        lore:
+          - "&7Pick from range and rotate out."
+        enchantments:
+          QUICK_CHARGE: 3
+          PIERCING: 2
+      arrows:
+        enabled: true
+        material: ARROW
+        amount: 32
+        slot: 1
+        name: "&fFeathered Bolts"
+        lore:
+          - "&7Keep the pressure on."
+      pearls:
+        enabled: true
+        material: ENDER_PEARL
+        amount: 6
+        slot: 2
+        name: "&bTrail Pearls"
+        lore:
+          - "&7Rotate and collapse quickly."
+      water:
+        enabled: true
+        material: WATER_BUCKET
+        amount: 1
+        slot: 3
+        name: "&9Clutch Bucket"
+        lore:
+          - "&7Escape bad falls and awkward pushes."
+      spyglass:
+        enabled: true
+        material: SPYGLASS
+        amount: 1
+        slot: 4
+        name: "&fScout Scope"
+        lore:
+          - "&7Spot holders and rotations early."
+      food:
+        enabled: true
+        material: COOKED_BEEF
+        amount: 16
+        slot: 8
+        name: "&6Scout Rations"
+        lore:
+          - "&7Stay topped up while rotating."
+
+  saboteur:
+    enabled: true
+    name: "&c&lSaboteur"
+    icon: WIND_CHARGE
+    description:
+      - "&7Chaos, entry, and steal potential."
+      - "&7Strong for clutch egg contests."
+    effects:
+      - type: FIRE_RESISTANCE
+        duration: 72000
+        amplifier: 0
+        ambient: false
+        particles: true
+        icon: true
+    items:
+      helmet:
+        enabled: true
+        material: NETHERITE_HELMET
+        amount: 1
+        slot: helmet
+        name: "&cSaboteur Mask"
+        lore:
+          - "&7Get in, break the setup, get out."
+        enchantments:
+          PROTECTION: 3
+          UNBREAKING: 3
+      chestplate:
+        enabled: true
+        material: NETHERITE_CHESTPLATE
+        amount: 1
+        slot: chestplate
+        name: "&cSaboteur Plate"
+        lore:
+          - "&7Survive your own explosions."
+        enchantments:
+          BLAST_PROTECTION: 4
+          UNBREAKING: 3
+      leggings:
+        enabled: true
+        material: NETHERITE_LEGGINGS
+        amount: 1
+        slot: leggings
+        name: "&cSaboteur Leggings"
+        lore:
+          - "&7Mobility through the chaos."
+        enchantments:
+          PROTECTION: 3
+          UNBREAKING: 3
+      boots:
+        enabled: true
+        material: NETHERITE_BOOTS
+        amount: 1
+        slot: boots
+        name: "&cSaboteur Boots"
+        lore:
+          - "&7Launch, land, and keep running."
+        enchantments:
+          FEATHER_FALLING: 4
+          PROTECTION: 3
+          UNBREAKING: 3
+      axe:
+        enabled: true
+        material: NETHERITE_AXE
+        amount: 1
+        slot: 0
+        name: "&cSaboteur Axe"
+        lore:
+          - "&7Burst damage for surprise engages."
+        enchantments:
+          SHARPNESS: 4
+      wind:
+        enabled: true
+        material: WIND_CHARGE
+        amount: 8
+        slot: 1
+        name: "&fDisruption Charges"
+        lore:
+          - "&7Create openings and steal space."
+      flint:
+        enabled: true
+        material: FLINT_AND_STEEL
+        amount: 1
+        slot: 2
+        name: "&6Igniter"
+        lore:
+          - "&7Force movement during pressure fights."
+      tnt:
+        enabled: true
+        material: TNT
+        amount: 6
+        slot: 3
+        name: "&cBreach Packs"
+        lore:
+          - "&7Blow open stubborn positions."
+      obsidian:
+        enabled: true
+        material: OBSIDIAN
+        amount: 12
+        slot: 4
+        name: "&5Lockdown Blocks"
+        lore:
+          - "&7Trap exits or claim short cover."
+      gaps:
+        enabled: true
+        material: GOLDEN_APPLE
+        amount: 2
+        slot: 5
+        name: "&6Raid Apples"
+        lore:
+          - "&7Reset after a messy engage."
+
+  anchorite:
+    enabled: true
+    name: "&5&lAnchorite"
+    icon: RESPAWN_ANCHOR
+    description:
+      - "&7Explosive control and area denial."
+      - "&7Deadly around hotspots and bridges."
+    effects:
+      - type: RESISTANCE
+        duration: 72000
+        amplifier: 0
+        ambient: false
+        particles: true
+        icon: true
+    items:
+      helmet:
+        enabled: true
+        material: NETHERITE_HELMET
+        amount: 1
+        slot: helmet
+        name: "&5Anchorite Helm"
+        lore:
+          - "&7Built for your own blast radius."
+        enchantments:
+          BLAST_PROTECTION: 4
+          UNBREAKING: 3
+      chestplate:
+        enabled: true
+        material: NETHERITE_CHESTPLATE
+        amount: 1
+        slot: chestplate
+        name: "&5Anchorite Plate"
+        lore:
+          - "&7Push objectives without fear."
+        enchantments:
+          PROTECTION: 4
+          UNBREAKING: 3
+      leggings:
+        enabled: true
+        material: NETHERITE_LEGGINGS
+        amount: 1
+        slot: leggings
+        name: "&5Anchorite Leggings"
+        lore:
+          - "&7Keep moving while setting up traps."
+        enchantments:
+          PROTECTION: 3
+          SWIFT_SNEAK: 2
+          UNBREAKING: 3
+      boots:
+        enabled: true
+        material: NETHERITE_BOOTS
+        amount: 1
+        slot: boots
+        name: "&5Anchorite Boots"
+        lore:
+          - "&7Stay upright in bridge fights."
+        enchantments:
+          FEATHER_FALLING: 4
+          PROTECTION: 3
+          UNBREAKING: 3
+      sword:
+        enabled: true
+        material: NETHERITE_SWORD
+        amount: 1
+        slot: 0
+        name: "&5Anchorite Sword"
+        lore:
+          - "&7Reliable melee backup."
+        enchantments:
+          SHARPNESS: 3
+      anchors:
+        enabled: true
+        material: RESPAWN_ANCHOR
+        amount: 2
+        slot: 1
+        name: "&5Void Anchors"
+        lore:
+          - "&7Explosive control for tight fights."
+      glowstone:
+        enabled: true
+        material: GLOWSTONE
+        amount: 12
+        slot: 2
+        name: "&eAnchor Charges"
+        lore:
+          - "&7Fuel the anchor blasts."
+      pearls:
+        enabled: true
+        material: ENDER_PEARL
+        amount: 3
+        slot: 3
+        name: "&5Blink Charges"
+        lore:
+          - "&7Reposition after setting traps."
+      gaps:
+        enabled: true
+        material: GOLDEN_APPLE
+        amount: 2
+        slot: 4
+        name: "&6Pressure Apples"
+        lore:
+          - "&7Survive your own chaos."
+      obsidian:
+        enabled: true
+        material: OBSIDIAN
+        amount: 10
+        slot: 5
+        name: "&5Anchor Walls"
+        lore:
+          - "&7Shape the fight before it shapes you."
+
+  sentinel:
+    enabled: true
+    name: "&a&lSentinel"
+    icon: BOW
+    description:
+      - "&7Balanced ranged control kit."
+      - "&7Strong for protecting your team core."
+    effects:
+      - type: NIGHT_VISION
+        duration: 72000
+        amplifier: 0
+        ambient: false
+        particles: false
+        icon: true
+    items:
+      helmet:
+        enabled: true
+        material: NETHERITE_HELMET
+        amount: 1
+        slot: helmet
+        name: "&aSentinel Visor"
+        lore:
+          - "&7See every push before it lands."
+        enchantments:
+          PROTECTION: 3
+          UNBREAKING: 3
+      chestplate:
+        enabled: true
+        material: NETHERITE_CHESTPLATE
+        amount: 1
+        slot: chestplate
+        name: "&aSentinel Guard"
+        lore:
+          - "&7Hold lines around the objective."
+        enchantments:
+          PROTECTION: 4
+          UNBREAKING: 3
+      leggings:
+        enabled: true
+        material: NETHERITE_LEGGINGS
+        amount: 1
+        slot: leggings
+        name: "&aSentinel Leggings"
+        lore:
+          - "&7Stay steady under ranged pressure."
+        enchantments:
+          PROTECTION: 3
+          UNBREAKING: 3
+      boots:
+        enabled: true
+        material: NETHERITE_BOOTS
+        amount: 1
+        slot: boots
+        name: "&aSentinel Boots"
+        lore:
+          - "&7Reposition without giving space."
+        enchantments:
+          FEATHER_FALLING: 4
+          PROTECTION: 3
+          UNBREAKING: 3
+      bow:
+        enabled: true
+        material: BOW
+        amount: 1
+        slot: 0
+        name: "&aSentinel Bow"
+        lore:
+          - "&7Control space around the objective."
+        enchantments:
+          POWER: 3
+          PUNCH: 1
+      arrows:
+        enabled: true
+        material: ARROW
+        amount: 40
+        slot: 1
+        name: "&fGuard Arrows"
+        lore:
+          - "&7Enough ammo for long fights."
+      shield:
+        enabled: true
+        material: SHIELD
+        amount: 1
+        slot: offhand
+        name: "&aSentinel Shield"
+        lore:
+          - "&7Hold angles and survive pushes."
+      pearls:
+        enabled: true
+        material: ENDER_PEARL
+        amount: 2
+        slot: 2
+        name: "&aQuickstep Pearls"
+        lore:
+          - "&7Reposition to better sight lines."
+      carrots:
+        enabled: true
+        material: GOLDEN_CARROT
+        amount: 16
+        slot: 8
+        name: "&6Focus Rations"
+        lore:
+          - "&7Long fights need clean sustain."
+
+  trapper:
+    enabled: true
+    name: "&7&lTrapper"
+    icon: COBWEB
+    description:
+      - "&7Control movement and punish overextensions."
+      - "&7Great at locking down the EggHolder route."
+    effects:
+      - type: SPEED
+        duration: 72000
+        amplifier: 0
+        ambient: false
+        particles: true
+        icon: true
+    items:
+      helmet:
+        enabled: true
+        material: NETHERITE_HELMET
+        amount: 1
+        slot: helmet
+        name: "&7Trapper Hood"
+        lore:
+          - "&7Stay alive while setting the snare."
+        enchantments:
+          PROTECTION: 3
+          UNBREAKING: 3
+      chestplate:
+        enabled: true
+        material: NETHERITE_CHESTPLATE
+        amount: 1
+        slot: chestplate
+        name: "&7Trapper Vest"
+        lore:
+          - "&7Enough armor to fight after the catch."
+        enchantments:
+          PROTECTION: 3
+          UNBREAKING: 3
+      leggings:
+        enabled: true
+        material: NETHERITE_LEGGINGS
+        amount: 1
+        slot: leggings
+        name: "&7Trapper Leggings"
+        lore:
+          - "&7Keep sprinting between setups."
+        enchantments:
+          PROTECTION: 3
+          UNBREAKING: 3
+      boots:
+        enabled: true
+        material: NETHERITE_BOOTS
+        amount: 1
+        slot: boots
+        name: "&7Trapper Boots"
+        lore:
+          - "&7Punish movement without dying to falls."
+        enchantments:
+          FEATHER_FALLING: 4
+          PROTECTION: 3
+          UNBREAKING: 3
+      sword:
+        enabled: true
+        material: NETHERITE_SWORD
+        amount: 1
+        slot: 0
+        name: "&7Trapper Fang"
+        lore:
+          - "&7Finish players after the catch."
+        enchantments:
+          SHARPNESS: 3
+      webs:
+        enabled: true
+        material: COBWEB
+        amount: 12
+        slot: 1
+        name: "&7Control Webs"
+        lore:
+          - "&7Punish movement and bridge fights."
+      bucket:
+        enabled: true
+        material: WATER_BUCKET
+        amount: 1
+        slot: 2
+        name: "&9Flow Bucket"
+        lore:
+          - "&7Disrupt pushes and save yourself."
+      pearls:
+        enabled: true
+        material: ENDER_PEARL
+        amount: 3
+        slot: 3
+        name: "&7Snap Pearls"
+        lore:
+          - "&7Follow catches instantly."
+      gaps:
+        enabled: true
+        material: GOLDEN_APPLE
+        amount: 3
+        slot: 4
+        name: "&6Trapper Apples"
+        lore:
+          - "&7Stay alive while holding angles."
+      bow:
+        enabled: true
+        material: BOW
+        amount: 1
+        slot: 5
+        name: "&7Pinning Bow"
+        lore:
+          - "&7Force awkward movement into your webs."
+        enchantments:
+          POWER: 2
+
+  lancer:
+    enabled: true
+    name: "&e&lLancer"
+    icon: NETHERITE_SPEAR
+    description:
+      - "&7Dive kit with brutal entry potential."
+      - "&7Built for collapsing onto the holder."
+    effects:
+      - type: SPEED
+        duration: 72000
+        amplifier: 0
+        ambient: false
+        particles: true
+        icon: true
+    items:
+      helmet:
+        enabled: true
+        material: NETHERITE_HELMET
+        amount: 1
+        slot: helmet
+        name: "&eLancer Helm"
+        lore:
+          - "&7For players who go first."
+        enchantments:
+          PROTECTION: 3
+          UNBREAKING: 3
+      chestplate:
+        enabled: true
+        material: NETHERITE_CHESTPLATE
+        amount: 1
+        slot: chestplate
+        name: "&eLancer Plate"
+        lore:
+          - "&7Armor that keeps the dive alive."
+        enchantments:
+          PROTECTION: 3
+          UNBREAKING: 3
+      leggings:
+        enabled: true
+        material: NETHERITE_LEGGINGS
+        amount: 1
+        slot: leggings
+        name: "&eLancer Leggings"
+        lore:
+          - "&7Move hard and hit harder."
+        enchantments:
+          PROTECTION: 3
+          UNBREAKING: 3
+      boots:
+        enabled: true
+        material: NETHERITE_BOOTS
+        amount: 1
+        slot: boots
+        name: "&eLancer Boots"
+        lore:
+          - "&7Land dives without exploding."
+        enchantments:
+          FEATHER_FALLING: 4
+          PROTECTION: 3
+          UNBREAKING: 3
+      spear:
+        enabled: true
+        material: NETHERITE_SPEAR
+        amount: 1
+        slot: 0
+        name: "&eVoid Spear"
+        lore:
+          - "&7Punch through spacing and panic."
+        enchantments:
+          LUNGE: 2
+          SHARPNESS: 3
+      shield:
+        enabled: true
+        material: SHIELD
+        amount: 1
+        slot: offhand
+        name: "&eDive Guard"
+        lore:
+          - "&7Block once, commit after."
+      wind:
+        enabled: true
+        material: WIND_CHARGE
+        amount: 5
+        slot: 1
+        name: "&fLift Charges"
+        lore:
+          - "&7Create your own entry angle."
+      pearls:
+        enabled: true
+        material: ENDER_PEARL
+        amount: 4
+        slot: 2
+        name: "&eCollapse Pearls"
+        lore:
+          - "&7Arrive exactly where the panic starts."
+      apples:
+        enabled: true
+        material: GOLDEN_APPLE
+        amount: 3
+        slot: 3
+        name: "&6Dive Apples"
+        lore:
+          - "&7Reset after every hard commit."
+      beef:
+        enabled: true
+        material: COOKED_BEEF
+        amount: 16
+        slot: 8
+        name: "&6Lancer Rations"
+        lore:
+          - "&7Stay ready for repeat engages."
+
+  bulwark:
+    enabled: true
+    name: "&9&lBulwark"
+    icon: SHIELD
+    description:
+      - "&7Pure frontline control and peel."
+      - "&7Best for teams protecting a carry."
+    effects:
+      - type: RESISTANCE
+        duration: 72000
+        amplifier: 0
+        ambient: false
+        particles: true
+        icon: true
+    items:
+      helmet:
+        enabled: true
+        material: NETHERITE_HELMET
+        amount: 1
+        slot: helmet
+        name: "&9Bulwark Helm"
+        lore:
+          - "&7Built to stand at the doorway."
+        enchantments:
+          PROTECTION: 4
+          UNBREAKING: 3
+      chestplate:
+        enabled: true
+        material: NETHERITE_CHESTPLATE
+        amount: 1
+        slot: chestplate
+        name: "&9Bulwark Chestplate"
+        lore:
+          - "&7Peel for teammates under pressure."
+        enchantments:
+          PROTECTION: 4
+          UNBREAKING: 3
+      leggings:
+        enabled: true
+        material: NETHERITE_LEGGINGS
+        amount: 1
+        slot: leggings
+        name: "&9Bulwark Leggings"
+        lore:
+          - "&7Tank trades and keep walking."
+        enchantments:
+          PROTECTION: 4
+          UNBREAKING: 3
+      boots:
+        enabled: true
+        material: NETHERITE_BOOTS
+        amount: 1
+        slot: boots
+        name: "&9Bulwark Boots"
+        lore:
+          - "&7Plant your feet and hold space."
+        enchantments:
+          FEATHER_FALLING: 4
+          PROTECTION: 4
+          UNBREAKING: 3
+      sword:
+        enabled: true
+        material: NETHERITE_SWORD
+        amount: 1
+        slot: 0
+        name: "&9Bulwark Edge"
+        lore:
+          - "&7Reliable damage when the peel lands."
+        enchantments:
+          SHARPNESS: 3
+      shield:
+        enabled: true
+        material: SHIELD
+        amount: 1
+        slot: offhand
+        name: "&9Bulwark Shield"
+        lore:
+          - "&7Hold the line."
+      bow:
+        enabled: true
+        material: BOW
+        amount: 1
+        slot: 1
+        name: "&9Peel Bow"
+        lore:
+          - "&7Knock threats off your teammates."
+        enchantments:
+          POWER: 2
+          PUNCH: 1
+      arrows:
+        enabled: true
+        material: ARROW
+        amount: 24
+        slot: 2
+        name: "&fCover Arrows"
+        lore:
+          - "&7Enough for key interrupts."
+      apples:
+        enabled: true
+        material: GOLDEN_APPLE
+        amount: 3
+        slot: 3
+        name: "&6Bulwark Apples"
+        lore:
+          - "&7Sustain through the frontline."
+      cobble:
+        enabled: true
+        material: COBBLESTONE
+        amount: 32
+        slot: 4
+        name: "&7Hold Blocks"
+        lore:
+          - "&7Instant cover when the fight shifts."
+
+  alchemist:
+    enabled: true
+    name: "&3&lAlchemist"
+    icon: SPLASH_POTION
+    description:
+      - "&7Utility-heavy support and disruption kit."
+      - "&7Turns chaotic fights in your team's favor."
+    effects:
+      - type: FIRE_RESISTANCE
+        duration: 72000
+        amplifier: 0
+        ambient: false
+        particles: true
+        icon: true
+    items:
+      helmet:
+        enabled: true
+        material: NETHERITE_HELMET
+        amount: 1
+        slot: helmet
+        name: "&3Alchemist Hood"
+        lore:
+          - "&7Support without folding instantly."
+        enchantments:
+          PROTECTION: 3
+          UNBREAKING: 3
+      chestplate:
+        enabled: true
+        material: NETHERITE_CHESTPLATE
+        amount: 1
+        slot: chestplate
+        name: "&3Alchemist Coat"
+        lore:
+          - "&7Stay alive long enough to swing fights."
+        enchantments:
+          PROTECTION: 3
+          UNBREAKING: 3
+      leggings:
+        enabled: true
+        material: NETHERITE_LEGGINGS
+        amount: 1
+        slot: leggings
+        name: "&3Alchemist Leggings"
+        lore:
+          - "&7Utility players still need armor."
+        enchantments:
+          PROTECTION: 3
+          UNBREAKING: 3
+      boots:
+        enabled: true
+        material: NETHERITE_BOOTS
+        amount: 1
+        slot: boots
+        name: "&3Alchemist Boots"
+        lore:
+          - "&7Move fast between teammates."
+        enchantments:
+          FEATHER_FALLING: 4
+          PROTECTION: 3
+          UNBREAKING: 3
+      sword:
+        enabled: true
+        material: NETHERITE_SWORD
+        amount: 1
+        slot: 0
+        name: "&3Catalyst Blade"
+        lore:
+          - "&7You still need a real weapon."
+        enchantments:
+          SHARPNESS: 3
+      healing:
+        enabled: true
+        material: SPLASH_POTION
+        amount: 2
+        slot: 1
+        potion-type: HEALING
+        name: "&dBurst Healing"
+        lore:
+          - "&7Emergency reset for your side."
+      swiftness:
+        enabled: true
+        material: SPLASH_POTION
+        amount: 2
+        slot: 2
+        potion-type: SWIFTNESS
+        name: "&bSprint Flask"
+        lore:
+          - "&7Give your team the move advantage."
+      poison:
+        enabled: true
+        material: LINGERING_POTION
+        amount: 1
+        slot: 3
+        potion-type: POISON
+        name: "&2Pressure Cloud"
+        lore:
+          - "&7Break tight bridge positions."
+      pearls:
+        enabled: true
+        material: ENDER_PEARL
+        amount: 3
+        slot: 4
+        name: "&3Rotator Pearls"
+        lore:
+          - "&7Get utility where it matters."
+      golden_carrots:
+        enabled: true
+        material: GOLDEN_CARROT
+        amount: 16
+        slot: 8
+        name: "&6Alchemist Rations"
+        lore:
+          - "&7Stay in the support loop."

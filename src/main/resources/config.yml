@@ -1,0 +1,478 @@
+# EggHolder / End War main configuration
+
+systems:
+  # If true, /eggholder add <player> only works when that player currently has the dragon egg.
+  commands-require-egg: true
+  visual-update-interval-ticks: 4
+
+  # Automatically scans online players and assigns the EggHolder role to the player carrying the egg.
+  auto-detect-egg-holder: true
+  auto-detect-interval-ticks: 10
+
+  # Toggle live coordinate tracking in the bossbar.
+  coordinate-tracking-enabled: true
+
+  # If true, completing the configured advancement triggers an automatic EggHolder scan.
+  advancement-trigger-enabled: true
+  advancement-key: "minecraft:end/dragon_egg"
+
+  # If true, the current EggHolder is removed as soon as they stop carrying the egg.
+  remove-holder-when-egg-missing: true
+
+bossbar:
+  enabled: true
+  color: RED
+  style: SOLID
+  update-interval-ticks: 5
+  progress: 1.0
+  title-format: "&c&lEGGHOLDER &d%player% &6&lX:&6 %x% &6&lY:&6 %y% &6&lZ:&6 %z%"
+  hidden-coordinate-text: "???"
+
+holder:
+  team-id: "egg_holder"
+  nametag-prefix: "&d[EggHolder] "
+  tab-name-format: "&d[EggHolder] %player%"
+  restore-previous-team: true
+  strip-role-items-on-remove: true
+  strip-effects-on-remove: true
+
+  glow:
+    enabled: true
+    color: LIGHT_PURPLE
+
+  head-display:
+    enabled: true
+    y-offset: 2.15
+    item-material: DRAGON_EGG
+    scale: 0.85
+    update-interval-ticks: 1
+    interpolation-duration-ticks: 2
+    teleport-duration-ticks: 2
+    interpolation-delay-ticks: 0
+    view-range: 32.0
+    hide-from-holder: true
+
+  title:
+    enabled: true
+    fade-in: 10
+    stay: 60
+    fade-out: 20
+
+announcements:
+  chat-enabled: true
+  titles-enabled: true
+  title:
+    fade-in: 10
+    stay: 60
+    fade-out: 20
+    follow-up-delay-ticks: 40
+  kill-broadcast-enabled: true
+  removal-broadcast-enabled: false
+
+egg:
+  material: DRAGON_EGG
+
+  dropped-item:
+    glow: true
+    custom-name-visible: false
+    custom-name: "&dDragon Egg"
+
+  void-death:
+    spawn-replacement-egg: true
+
+  logout-timeout:
+    enabled: true
+    seconds: 60
+    spawn-replacement-egg: true
+
+    respawn-location:
+      world: ""
+      x: 0.5
+      y: 66.0
+      z: 0.5
+      yaw: 0.0
+      pitch: 0.0
+
+items:
+  prevent-role-item-drops: true
+  store-overflow-in-ender-chest: true
+
+  holder-items:
+    spear:
+      enabled: true
+      material: NETHERITE_SPEAR
+      amount: 1
+      slot: 0
+      name: "&d&lNetherite Spear"
+      lore:
+        - "&7Granted to whoever carries the dragon egg."
+      unbreakable: false
+      enchantments:
+        LUNGE: 3
+        SHARPNESS: 3
+
+    mace:
+      enabled: true
+      material: MACE
+      amount: 1
+      slot: 1
+      name: "&d&lMace"
+      lore:
+        - "&7Event-issued power for the EggHolder."
+      unbreakable: false
+      enchantments:
+        DENSITY: 3
+        WIND_BURST: 1
+
+effects:
+  holder-potion-effects:
+    - type: SPEED
+      duration: -1
+      amplifier: 0
+      ambient: false
+      particles: true
+      icon: true
+
+dead-state:
+  enabled: true
+  game-mode: ADVENTURE
+  allow-flight: true
+  start-flying: true
+  vanish-from-alive: true
+  invulnerable: true
+  can-pickup-items: false
+  can-drop-items: false
+  can-modify-inventory: false
+  list-name-format: "&7&o%player%"
+  revive-to-death-location: true
+
+  safe-end-platform:
+    enabled: true
+    min-safe-y: 32
+    world: ""
+    x: 0.5
+    y: 66.0
+    z: 0.5
+    yaw: 0.0
+    pitch: 0.0
+
+  teleporter:
+    enabled: true
+    material: RECOVERY_COMPASS
+    slot: 4
+    name: "&b&lTeleporter"
+    lore:
+      - "&7Right-click to open the alive player menu."
+    menu-title: "&8Alive Players"
+    head-name-format: "&a%player%"
+    head-lore:
+      - "&7World: &f%world%"
+      - "&7Coords: &f%x%, %y%, %z%"
+      - "&7State: &f%role%"
+      - "&eClick to teleport."
+    close-after-click: true
+
+menus:
+  team:
+    material: NETHER_STAR
+    name: "&b&lTeam Menu"
+    lore:
+      - "&7Create, manage, and join teams."
+      - "&7Use it before the war starts."
+    slot: 7
+  kits:
+    material: ENDER_EYE
+    name: "&d&lHunter Kits"
+    lore:
+      - "&7Pick a powerful event kit."
+      - "&7Your kit is applied when the match starts."
+    slot: 8
+  audience:
+    material: ECHO_SHARD
+    name: "&6&lAudience Vote"
+    lore:
+      - "&7Dead players can vote for event twists."
+      - "&7Open when the vote window starts."
+    slot: 5
+
+teams:
+  max-size: 4
+  prefix-format: "%color%[%team%] &r"
+  list-format: "%prefix%%player_color%%player%"
+  solo-name-format: "%player% Team"
+  colors:
+    - "#FF7AA2"
+    - "#66D9FF"
+    - "#FFD166"
+    - "#C1FF72"
+    - "#C792FF"
+    - "#FF9F68"
+    - "#7BF1A8"
+    - "#90A8FF"
+  auto-names:
+    enabled: true
+    format: "%adjective% %noun%"
+    adjectives:
+      - "Crimson"
+      - "Void"
+      - "Iron"
+      - "Shadow"
+      - "Solar"
+      - "Frost"
+      - "Storm"
+      - "Ember"
+      - "Ivory"
+      - "Night"
+    nouns:
+      - "Raiders"
+      - "Guard"
+      - "Reapers"
+      - "Dragons"
+      - "Hunters"
+      - "Titans"
+      - "Vanguard"
+      - "Phantoms"
+      - "Legion"
+      - "Sentinels"
+
+game:
+  worlds:
+    overworld: world
+    end: world_the_end
+  end-center:
+    x: 0.5
+    y: 66.0
+    z: 0.5
+
+managed-end-world:
+  enabled: true
+  prepare-on-startup: true
+  clear-region-first: true
+  resource-path: "maps/ScarworldEndIsland.schem"
+  extract-bundled-schematic: true
+  overwrite-extracted-schematic: true
+  extracted-file: "maps/ScarworldEndIsland.schem"
+  use-crystal-pedestals-for-objectives: true
+  objective-location-limit: 4
+  dragon-battle:
+    reset-previously-killed: true
+    spawn-healing-crystals: true
+    show-crystal-bottom: true
+    max-healing-crystals: 10
+    anchor-search-radius: 4
+    pedestal-min-distance: 20.0
+    pedestal-max-distance: 120.0
+
+start:
+  portal:
+    x: 0
+    z: 0
+    radius: 3
+  entry-lock-seconds: 60
+  team-scatter-radius: 110.0
+  spawn-platform-radius: 3
+
+features:
+  end-storm:
+    enabled: true
+    interval-seconds: 180
+  anti-camp-detector:
+    enabled: true
+    radius: 12.0
+    seconds: 20
+  egg-drop-countdown:
+    enabled: true
+    seconds: 5
+  clutch-steal-bonus:
+    enabled: true
+    effects:
+      list:
+        - type: SPEED
+          duration: 120
+          amplifier: 1
+          ambient: false
+          particles: true
+          icon: true
+        - type: RESISTANCE
+          duration: 80
+          amplifier: 0
+          ambient: false
+          particles: true
+          icon: true
+  audience-tools:
+    enabled: true
+    vote-duration-seconds: 30
+    heal-effects:
+      list:
+        - type: REGENERATION
+          duration: 120
+          amplifier: 1
+          ambient: false
+          particles: true
+          icon: true
+        - type: ABSORPTION
+          duration: 200
+          amplifier: 0
+          ambient: false
+          particles: true
+          icon: true
+  overtime-win-condition:
+    enabled: true
+    seconds: 1800
+    damage-per-second: 1.0
+  revenge-mark:
+    enabled: true
+    seconds: 30
+  center-no-build-ring:
+    enabled: true
+    radius: 20.0
+  egg-burn-timer:
+    enabled: true
+    seconds: 90
+  kill-confirm-reward:
+    enabled: true
+    effects:
+      list:
+        - type: SPEED
+          duration: 120
+          amplifier: 0
+          ambient: false
+          particles: true
+          icon: true
+        - type: STRENGTH
+          duration: 80
+          amplifier: 0
+          ambient: false
+          particles: true
+          icon: true
+    commands:
+      - "playsound minecraft:entity.player.levelup master %player%"
+  combat-momentum-buff:
+    enabled: true
+    effects:
+      list:
+        - type: SPEED
+          duration: 60
+          amplifier: 0
+          ambient: false
+          particles: true
+          icon: true
+  egg-shockwave:
+    enabled: true
+    radius: 8.0
+    power: 1.0
+  hotspot-rotation:
+    enabled: true
+    interval-seconds: 150
+    duration-seconds: 60
+    radius: 14.0
+    visuals:
+      ring-points: 28
+      cloud-particles: 24
+      height: 0.25
+    effects:
+      list:
+        - type: SPEED
+          duration: 60
+          amplifier: 0
+          ambient: false
+          particles: true
+          icon: true
+  end-crystal-objectives:
+    enabled: true
+    capture-seconds: 10
+    capture-radius: 8.0
+    capture-effects:
+      list:
+        - type: RESISTANCE
+          duration: 140
+          amplifier: 0
+          ambient: false
+          particles: true
+          icon: true
+    objectives:
+      north:
+        x: 40.5
+        y: 67.0
+        z: 0.5
+      south:
+        x: -40.5
+        y: 67.0
+        z: 0.5
+      east:
+        x: 0.5
+        y: 67.0
+        z: 40.5
+      west:
+        x: 0.5
+        y: 67.0
+        z: -40.5
+  panic-phase:
+    enabled: true
+    health-threshold: 8.0
+  bridge-collapse-event:
+    enabled: true
+    interval-seconds: 180
+    radius: 150.0
+    blocks-per-wave: 40
+  anti-clean-mechanic:
+    enabled: true
+    effects:
+      list:
+        - type: RESISTANCE
+          duration: 80
+          amplifier: 1
+          ambient: false
+          particles: true
+          icon: true
+  mercyless-endgame:
+    enabled: true
+    seconds: 2400
+  no-escape-timer:
+    enabled: true
+    seconds: 240
+    effects:
+      list:
+        - type: GLOWING
+          duration: 200
+          amplifier: 0
+          ambient: false
+          particles: false
+          icon: true
+  supply-drops:
+    enabled: true
+    interval-seconds: 300
+    spawn-height: 40
+    descent-per-visual-tick: 1.15
+    sway-radius: 0.75
+    canopy-radius: 1.4
+    protection-radius: 4.0
+    loot:
+      anchor-cache:
+        enabled: true
+        material: RESPAWN_ANCHOR
+        amount: 2
+        name: "&dAnchor Cache"
+        lore:
+          - "&7Strong endgame utility."
+      pearl-stack:
+        enabled: true
+        material: ENDER_PEARL
+        amount: 8
+        name: "&5Quickstep Pearls"
+        lore:
+          - "&7Fast rotations and pressure."
+      apples:
+        enabled: true
+        material: ENCHANTED_GOLDEN_APPLE
+        amount: 2
+        name: "&6God Apple"
+        lore:
+          - "&7Rare sustain for huge fights."
+      totem:
+        enabled: true
+        material: TOTEM_OF_UNDYING
+        amount: 1
+        name: "&eLast Chance"
+        lore:
+          - "&7One shot at surviving the chaos."

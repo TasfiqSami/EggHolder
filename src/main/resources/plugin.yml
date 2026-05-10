@@ -1,0 +1,45 @@
+name: EggHolder
+version: 2.0.0
+main: me.tasfiq.eggholder.EggHolderPlugin
+api-version: '1.21'
+author: Tasfiq
+description: End War event plugin with automatic EggHolder tracking, gear, and death spectator mode.
+
+commands:
+  eggholder:
+    description: Add, remove, or reload the current EggHolder target.
+    usage: /eggholder <add|remove|reload> [player]
+    permission: eggholder.use
+  revive:
+    description: Revive a dead player back into the event.
+    usage: /revive <player>
+    permission: eggholder.revive
+  team:
+    description: Create and manage End War teams.
+    usage: /team <create|invite|accept|rename|leave|kick|disband|menu>
+    permission: eggholder.team
+  start:
+    description: Start the End War match and spawn the portal.
+    usage: /start
+    permission: eggholder.start
+  endwar:
+    description: Live admin controls for End War features and the managed End map.
+    usage: /endwar <start|stop|feature|audience|world>
+    permission: eggholder.admin
+
+permissions:
+  eggholder.use:
+    description: Allows use of the /eggholder command.
+    default: op
+  eggholder.revive:
+    description: Allows use of the /revive command.
+    default: op
+  eggholder.team:
+    description: Allows use of the /team command.
+    default: true
+  eggholder.start:
+    description: Allows use of the /start command.
+    default: op
+  eggholder.admin:
+    description: Allows use of /endwar live controls.
+    default: op
