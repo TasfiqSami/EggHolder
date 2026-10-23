@@ -70,7 +70,9 @@ public final class TeleportMenuListener implements Listener {
             return;
         }
 
-        if (!(event.getView().getTopInventory().getHolder() instanceof DeadPlayerService.TeleportMenuHolder)) {
+        if (!(event.getView().getTopInventory().getHolder() instanceof DeadPlayerService.TeleportMenuHolder holder)
+                || !holder.viewerUuid().equals(player.getUniqueId())
+                || !deadPlayerService.isDead(player)) {
             return;
         }
 

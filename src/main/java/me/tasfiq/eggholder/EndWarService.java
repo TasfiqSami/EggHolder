@@ -634,7 +634,7 @@ public final class EndWarService implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onProtectedBuild(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         if (!isGameRunning() || !isEndWorld(event.getBlockPlaced().getWorld())) {
@@ -649,7 +649,7 @@ public final class EndWarService implements Listener {
         placedEndBlocks.add(BlockKey.of(event.getBlockPlaced()));
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onProtectedBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         if (!isGameRunning() || !isEndWorld(event.getBlock().getWorld())) {
@@ -716,6 +716,9 @@ public final class EndWarService implements Listener {
         }
 
         event.setCancelled(true);
+        if (!plugin.getDeadPlayerService().isDead(player)) {
+            return;
+        }
         ItemStack item = event.getCurrentItem();
         if (item == null || !item.hasItemMeta()) {
             return;

@@ -270,6 +270,9 @@ public final class KitService implements Listener {
         }
 
         event.setCancelled(true);
+        if (plugin.getDeadPlayerService().isDead(player)) {
+            return;
+        }
         ItemStack clicked = event.getCurrentItem();
         if (clicked == null || !clicked.hasItemMeta()) {
             return;
