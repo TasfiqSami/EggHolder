@@ -1,7 +1,7 @@
 name: EggHolder
 version: 2.1.0
 main: me.tasfiq.eggholder.EggHolderPlugin
-api-version: '1.21'
+api-version: '1.20.6'
 author: Tasfiq
 description: End War event plugin with automatic EggHolder tracking, gear, and death spectator mode.
 

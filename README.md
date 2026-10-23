@@ -49,11 +49,11 @@ So even if someone does not know the event beforehand, they can think of it like
 
 ## Server Requirements
 
-- `Paper 1.21.1` or newer
+- `Paper 1.20.6` through `1.21.11` (API compatibility checks run against both endpoints)
 - `Java 21`
 - Maven only if you want to build from source
 
-Supported server software includes Paper and Paper API forks such as Purpur and Pufferfish. The plugin uses the standard Bukkit scheduler, so it is not Folia-compatible. Spigot is not currently targeted. CI compiles against Paper API 1.21.1 and 1.21.11. Optional newer gear adapts on older supported versions: Netherite Spears fall back to tridents, Maces fall back to Netherite axes if unavailable, and unknown enchantments are skipped.
+Supported software includes Paper and Paper API forks such as Purpur and Pufferfish (where that Minecraft version is available). The plugin uses the standard Bukkit scheduler, so it is not Folia-compatible. Spigot is not currently targeted. CI compiles against Paper API 1.20.6 and 1.21.11. Optional newer gear adapts on older supported versions: Netherite Spears fall back to tridents, Maces fall back to Netherite axes if unavailable, and unknown enchantments are skipped.
 
 ## Managed End Map
 
