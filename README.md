@@ -485,6 +485,10 @@ Alternate admin start command.
 
 Stops the match and cleans up runtime systems.
 
+### `/endwar status`
+
+Shows the current match phase, EggHolder, elapsed match time, enabled event features, and scheduled or active event timers.
+
 ### `/endwar feature <feature> <on|off|trigger>`
 
 Live real-time control for event features.
@@ -563,6 +567,8 @@ This file controls:
 - feature timings
 - audience vote behavior
 - supply drop loot
+
+On startup and `/eggholder reload`, EggHolder validates feature switches, known timing values, materials, and potion effects. Invalid feature switches are reset to their documented defaults in memory, timing values are clamped to safe bounds, and item/effect loaders use their fallback behavior. Validation warnings are written to the server console. Validation does not rewrite the YAML files.
 
 ### `messages.yml`
 
