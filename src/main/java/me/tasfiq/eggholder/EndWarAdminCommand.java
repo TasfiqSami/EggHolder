@@ -126,12 +126,18 @@ public final class EndWarAdminCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
             case "close" -> {
-                endWarService.closeAudienceVote(false);
+                if (!endWarService.closeAudienceVote(false)) {
+                    plugin.getMessageManager().sendPrefixed(sender, "endwar-audience-no-vote");
+                    return true;
+                }
                 plugin.getMessageManager().sendPrefixed(sender, "endwar-audience-closed");
                 return true;
             }
             case "resolve" -> {
-                endWarService.closeAudienceVote(true);
+                if (!endWarService.closeAudienceVote(true)) {
+                    plugin.getMessageManager().sendPrefixed(sender, "endwar-audience-no-vote");
+                    return true;
+                }
                 plugin.getMessageManager().sendPrefixed(sender, "endwar-audience-resolved");
                 return true;
             }

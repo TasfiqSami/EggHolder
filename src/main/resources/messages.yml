@@ -3,7 +3,7 @@
 prefix: "&8[&dEggHolder&8] &r"
 
 no-permission: "&cYou do not have permission to use this."
-usage: "&cUsage: /%label% <add|remove|reload> [player]"
+usage: "&cUsage: /%label% <add|remove> <player> or /%label% reload"
 revive-usage: "&cUsage: /%label% <player>"
 
 player-must-be-online: "&cThat player must be online."
@@ -61,7 +61,7 @@ replacement-egg-spawned-broadcast: "&6A new dragon egg has spawned in %world% at
 replacement-egg-spawned-title: "&6&lNEW DRAGON EGG"
 replacement-egg-spawned-subtitle: "&fSpawned in %world% at &6%x% %y% %z%"
 
-team-usage: "&cUsage: /team <create|invite|accept|rename|leave|kick|disband|menu>"
+team-usage: "&cUsage: /team <create [name]|invite <player>|accept <player|team>|rename <name>|leave|kick <player>|disband|menu>"
 team-created: "&aTeam created: &f%team%"
 team-create-failed: "&cYou cannot create a team right now."
 team-invite-sent: "&aInvited &f%player% &ato your team."
@@ -100,6 +100,7 @@ endwar-feature-triggered: "&aTriggered feature: &f%feature%"
 endwar-feature-triggered-broadcast: "&7Admin &f%admin% &7triggered &f%feature%&7."
 endwar-feature-trigger-failed: "&cThat feature could not be triggered right now: &f%feature%"
 endwar-audience-usage: "&cUsage: /%label% audience <open|close|resolve>"
+endwar-audience-no-vote: "&cThere is no audience vote open right now. Use &f/endwar audience open&c first."
 endwar-audience-open-failed: "&cAudience vote could not be opened right now."
 endwar-audience-opened: "&aAudience vote opened."
 endwar-audience-closed: "&eAudience vote closed."

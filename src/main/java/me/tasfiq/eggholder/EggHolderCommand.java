@@ -117,12 +117,7 @@ public final class EggHolderCommand implements CommandExecutor, TabCompleter {
     }
 
     private Player getOnlinePlayer(String playerName) {
-        Player exact = Bukkit.getPlayerExact(playerName);
-        if (exact != null) {
-            return exact;
-        }
-
-        return Bukkit.getPlayer(playerName);
+        return Bukkit.getPlayerExact(playerName);
     }
 
     private List<String> partialMatches(String token, Iterable<String> options) {

@@ -362,25 +362,26 @@ public final class EndWarService implements Listener {
         return true;
     }
 
-    public void closeAudienceVote(boolean resolve) {
+    public boolean closeAudienceVote(boolean resolve) {
         if (audienceVote == null) {
-            return;
+            return false;
         }
 
         AudienceVote vote = audienceVote;
         audienceVote = null;
         if (!resolve) {
             plugin.getMessageManager().broadcastPrefixed("audience-vote-cancelled", Map.of());
-            return;
+            return true;
         }
 
         AudienceEffect winningEffect = vote.resolveWinner();
         if (winningEffect == null) {
             plugin.getMessageManager().broadcastPrefixed("audience-vote-no-winner", Map.of());
-            return;
+            return true;
         }
 
         triggerAudienceEffect(winningEffect);
+        return true;
     }
 
     public boolean startGame() {
