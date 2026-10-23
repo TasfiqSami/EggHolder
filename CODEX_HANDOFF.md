@@ -37,7 +37,7 @@ v2.2.2 is built, runtime-checked, pushed, and released. It addresses issues foun
 
 1. Check whether Modrinth approved project `jm0TqH0V`. If still processing, use dashboard/support to request the public plugin classification/route. v2.2.2 is already uploaded; do not duplicate it.
 2. GitHub Packages stable coordinate `me.tasfiq:eggholder:2.2.2` is present. Future pushes publish unique `-ci.<run>.<attempt>` versions; use the workflow's manual stable-version input only when intentionally publishing a release version. Latest push package run `40024828209` passed.
-3. New local, uncommitted work adds startup/reload config validation and `/endwar status`. The Java 21 `mvn -B -DskipTests package` build passed; automated tests and live runtime checks for these additions have not been run. Review and test these changes before releasing them.
+3. Local commit `aaf3741` adds startup/reload config validation and `/endwar status`; follow-up docs are in `8ee7c33`. The Java 21 `mvn -B -DskipTests package` build passed; automated tests and live runtime checks for these additions have not been run. Review and test these changes before releasing them.
 4. Full competitive match balance, death/revive interactions, Paper API 1.20.6 live runtime, Spigot runtime, and Folia are not covered by the localhost Paper 1.21.11 smoke test.
 5. Preserve `%LOCALAPPDATA%\Modrinth\eggholder-token.dpapi`; never put credentials in the repository or Markdown.
 
