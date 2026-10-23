@@ -67,7 +67,7 @@ public final class ManagedEndWorldService {
         }
 
         if (prepareOnStartup) {
-            prepareWorld(true);
+            prepareWorld(false);
             return;
         }
 
@@ -117,7 +117,7 @@ public final class ManagedEndWorldService {
         if (prepared && managedWorld != null && endCenter != null) {
             return true;
         }
-        return prepareWorld(true);
+        return prepareWorld(false);
     }
 
     public boolean prepareWorld(boolean forceRepaste) {

@@ -246,10 +246,15 @@ game:
 
 managed-end-world:
   enabled: true
+  # Prepare the bundled map on startup. Set false to defer map work until /start.
   prepare-on-startup: true
+  # Clear the schematic bounds before pasting during normal preparation.
+  # The explicit /endwar world prepare command always forces a clean rebuild.
   clear-region-first: true
   resource-path: "maps/ScarworldEndIsland.schem"
+  # Extract the bundled schematic into the plugin folder for inspection/reuse.
   extract-bundled-schematic: true
+  # Replace the extracted copy with the bundled version on each extraction.
   overwrite-extracted-schematic: true
   extracted-file: "maps/ScarworldEndIsland.schem"
   use-crystal-pedestals-for-objectives: true
