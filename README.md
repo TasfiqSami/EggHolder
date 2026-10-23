@@ -630,6 +630,24 @@ The final jar will be created at:
 target/EggHolder.jar
 ```
 
+## GitHub Packages (Maven)
+
+The Maven artifact is published to [GitHub Packages](https://github.com/TasfiqSami/EggHolder/packages) for developers who want to consume EggHolder as a Maven dependency.
+
+Coordinates for the current release:
+
+```xml
+<dependency>
+    <groupId>me.tasfiq</groupId>
+    <artifactId>eggholder</artifactId>
+    <version>2.1.0</version>
+</dependency>
+```
+
+Repository URL: `https://maven.pkg.github.com/TasfiqSami/EggHolder`.
+
+For a Minecraft server installation, download `EggHolder.jar` from GitHub Releases instead.
+
 ## Install On Server
 
 1. Build the jar or use the packaged one.
