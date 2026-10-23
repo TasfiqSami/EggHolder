@@ -246,6 +246,8 @@ game:
 
 managed-end-world:
   enabled: true
+  # WARNING: startup preparation edits the configured End world.
+  # When clear-region-first is true, blocks in the schematic bounds are removed before paste.
   # Prepare the bundled map on startup. Set false to defer map work until /start.
   prepare-on-startup: true
   # Clear the schematic bounds before pasting during normal preparation.

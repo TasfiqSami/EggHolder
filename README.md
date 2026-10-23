@@ -89,7 +89,16 @@ Important operator note:
 
 - the managed End system is controlled in `config.yml` under `managed-end-world`
 - if enabled, the plugin treats the configured End as an event map world rather than a normal vanilla End
+- startup preparation edits the configured world; with `clear-region-first: true`, blocks inside the schematic bounds are cleared before the map is pasted
+- set `prepare-on-startup: false` to defer preparation until the match starts, and set `clear-region-first: false` to overlay the schematic without clearing its bounds
 - admins can rebuild or inspect the managed map in-game with `/endwar world ...`
+
+## Version 2.2.0
+
+- Fixed routine managed-map preparation so `clear-region-first` is respected; `/endwar world prepare` remains an explicit clean rebuild.
+- Audience vote close/resolve commands now report when no vote is open.
+- EggHolder assignment uses exact online player names to avoid selecting the wrong target from an ambiguous partial name.
+- Command usage messages now show the required player and team arguments more clearly.
 
 ## Main Game Loop
 
