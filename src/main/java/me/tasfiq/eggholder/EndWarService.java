@@ -86,6 +86,7 @@ public final class EndWarService implements Listener {
     private final Map<UUID, Long> revengeMarkedUntil = new LinkedHashMap<>();
     private final Map<UUID, DamageContribution> holderDamage = new LinkedHashMap<>();
     private final Map<BlockKey, BlockData> startPortalSnapshot = new LinkedHashMap<>();
+    private final Map<BlockKey, BlockData> spawnPlatformSnapshot = new LinkedHashMap<>();
     private final Map<BlockKey, SupplyDrop> landedSupplyDrops = new LinkedHashMap<>();
     private final Map<BlockKey, CrystalObjective> crystalObjectives = new LinkedHashMap<>();
     private final Set<BlockKey> placedEndBlocks = new LinkedHashSet<>();
@@ -184,6 +185,7 @@ public final class EndWarService implements Listener {
         cancelTasks();
         cleanupRuntimeEntities();
         restoreStartPortalArea();
+        restoreSpawnPlatforms();
         playerStats.clear();
         entryProtectionUntil.clear();
         revengeMarkedUntil.clear();
@@ -440,6 +442,7 @@ public final class EndWarService implements Listener {
         matchState = MatchState.ENDED;
         cleanupRuntimeEntities();
         restoreStartPortalArea();
+        restoreSpawnPlatforms();
         plugin.getEggHolderService().removeHolder(EggHolderService.RemovalReason.COMMAND, false);
         plugin.getDeadPlayerService().restoreAllEliminatedPlayers();
         revengeMarkedUntil.clear();
@@ -1501,18 +1504,27 @@ public final class EndWarService implements Listener {
     }
 
     private void restoreStartPortalArea() {
-        if (overworld == null || startPortalSnapshot.isEmpty()) {
-            return;
-        }
-
         for (Map.Entry<BlockKey, BlockData> entry : new ArrayList<>(startPortalSnapshot.entrySet())) {
             BlockKey key = entry.getKey();
-            if (!overworld.getName().equals(key.worldName())) {
+            World world = Bukkit.getWorld(key.worldName());
+            if (world == null) {
                 continue;
             }
 
-            overworld.getBlockAt(key.x(), key.y(), key.z()).setBlockData(entry.getValue(), false);
+            world.getBlockAt(key.x(), key.y(), key.z()).setBlockData(entry.getValue(), false);
         }
+        startPortalSnapshot.clear();
+    }
+
+    private void restoreSpawnPlatforms() {
+        for (Map.Entry<BlockKey, BlockData> entry : new ArrayList<>(spawnPlatformSnapshot.entrySet())) {
+            BlockKey key = entry.getKey();
+            World world = Bukkit.getWorld(key.worldName());
+            if (world != null) {
+                world.getBlockAt(key.x(), key.y(), key.z()).setBlockData(entry.getValue(), false);
+            }
+        }
+        spawnPlatformSnapshot.clear();
         startPortalSnapshot.clear();
     }
 
@@ -1588,8 +1600,12 @@ public final class EndWarService implements Listener {
         int cz = center.getBlockZ();
         for (int x = -portalPlatformRadius; x <= portalPlatformRadius; x++) {
             for (int z = -portalPlatformRadius; z <= portalPlatformRadius; z++) {
-                center.getWorld().getBlockAt(cx + x, cy, cz + z).setType(Material.END_STONE, false);
-                center.getWorld().getBlockAt(cx + x, cy - 1, cz + z).setType(Material.OBSIDIAN, false);
+                Block floor = center.getWorld().getBlockAt(cx + x, cy, cz + z);
+                Block foundation = center.getWorld().getBlockAt(cx + x, cy - 1, cz + z);
+                spawnPlatformSnapshot.putIfAbsent(BlockKey.of(floor), floor.getBlockData().clone());
+                spawnPlatformSnapshot.putIfAbsent(BlockKey.of(foundation), foundation.getBlockData().clone());
+                floor.setType(Material.END_STONE, false);
+                foundation.setType(Material.OBSIDIAN, false);
             }
         }
     }
