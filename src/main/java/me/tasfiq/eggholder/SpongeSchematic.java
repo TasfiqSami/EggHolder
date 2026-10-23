@@ -285,7 +285,13 @@ final class SpongeSchematic {
     }
 
     private static BlockData createCompatibleBlockData(String rawState) {
-        for (String candidate : createParseCandidates(rawState)) {
+        List<String> candidates = new ArrayList<>(createParseCandidates(rawState));
+        String renamedState = renamedLegacyBlockState(rawState);
+        if (renamedState != null) {
+            candidates.addAll(createParseCandidates(renamedState));
+        }
+
+        for (String candidate : candidates) {
             try {
                 return Bukkit.createBlockData(candidate);
             } catch (IllegalArgumentException ignored) {
@@ -296,6 +302,23 @@ final class SpongeSchematic {
         Material material = Material.matchMaterial(materialName);
         if (material != null && material.isBlock()) {
             return material.createBlockData();
+        }
+        return null;
+    }
+
+    static String renamedLegacyBlockState(String rawState) {
+        if (rawState == null) {
+            return null;
+        }
+
+        int propertiesIndex = rawState.indexOf('[');
+        String blockId = propertiesIndex < 0 ? rawState : rawState.substring(0, propertiesIndex);
+        String properties = propertiesIndex < 0 ? "" : rawState.substring(propertiesIndex);
+        if (blockId.equals("minecraft:chain")) {
+            return "minecraft:iron_chain" + properties;
+        }
+        if (blockId.equals("chain")) {
+            return "iron_chain" + properties;
         }
         return null;
     }

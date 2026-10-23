@@ -1,6 +1,7 @@
 package me.tasfiq.eggholder;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -59,6 +60,16 @@ class ResourceContractTest {
         assertTrue(spear != null && Set.of("trident", "netherite_spear").contains(spear.getKey().getKey()));
         assertTrue(mace != null && Set.of("netherite_axe", "mace").contains(mace.getKey().getKey()));
         assertNull(TextUtil.parseCompatibleMaterial("NOT_A_REAL_MATERIAL"));
+    }
+
+    @Test
+    void legacyChainSchematicStatesMapToIronChainOnModernServers() {
+        assertEquals(
+                "minecraft:iron_chain[axis=y,waterlogged=false]",
+                SpongeSchematic.renamedLegacyBlockState("minecraft:chain[axis=y,waterlogged=false]")
+        );
+        assertEquals("iron_chain", SpongeSchematic.renamedLegacyBlockState("chain"));
+        assertNull(SpongeSchematic.renamedLegacyBlockState("minecraft:iron_chain[axis=x]"));
     }
 
     private YamlConfiguration load(String name) {
