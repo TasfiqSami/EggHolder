@@ -93,6 +93,12 @@ Important operator note:
 - set `prepare-on-startup: false` to defer preparation until the match starts, and set `clear-region-first: false` to overlay the schematic without clearing its bounds
 - admins can rebuild or inspect the managed map in-game with `/endwar world ...`
 
+## Version 2.2.2
+
+- Fixed Paper 1.21.11 scoreboard exceptions caused by copying named team colors into player-specific sidebars; colored team prefixes remain visible.
+- Fixed legacy `minecraft:chain` block states in the bundled End schematic by mapping them to `minecraft:iron_chain` on modern servers.
+- Consolidated push CI and GitHub Packages publishing into one workflow. The package publishes only after both Paper API compatibility builds pass, and its CI version follows the release version in `pom.xml`.
+
 ## Version 2.2.0
 
 - Fixed routine managed-map preparation so `clear-region-first` is respected; `/endwar world prepare` remains an explicit clean rebuild.
@@ -643,7 +649,7 @@ target/EggHolder.jar
 
 ## GitHub Packages (Maven)
 
-The Maven artifact is published to [GitHub Packages](https://github.com/TasfiqSami/EggHolder/packages) for developers who want to consume EggHolder as a Maven dependency. Every branch push builds and tests the project, then publishes a unique version like `2.1.0-ci.42.1`. The stable release version remains `2.1.0` until the next release version is set in `pom.xml`.
+The Maven artifact is published to [GitHub Packages](https://github.com/TasfiqSami/EggHolder/packages) for developers who want to consume EggHolder as a Maven dependency. A push runs one workflow: it builds against Paper API 1.20.6 and 1.21.11, then publishes a unique CI package only after both builds pass. Pull requests run both builds but do not publish. CI versions follow the release version in `pom.xml`, for example `2.2.2-ci.42.1`.
 
 Coordinates for the current release:
 
@@ -651,7 +657,7 @@ Coordinates for the current release:
 <dependency>
     <groupId>me.tasfiq</groupId>
     <artifactId>eggholder</artifactId>
-    <version>2.1.0</version>
+    <version>2.2.2</version>
 </dependency>
 ```
 
