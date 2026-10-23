@@ -711,12 +711,12 @@ public final class EndWarService implements Listener {
         if (!(event.getWhoClicked() instanceof Player player)) {
             return;
         }
-        if (!(event.getView().getTopInventory().getHolder() instanceof AudienceMenuHolder holder) || !holder.viewer().equals(player.getUniqueId())) {
+        if (!(event.getView().getTopInventory().getHolder() instanceof AudienceMenuHolder holder)) {
             return;
         }
 
         event.setCancelled(true);
-        if (!plugin.getDeadPlayerService().isDead(player)) {
+        if (!holder.viewer().equals(player.getUniqueId()) || !plugin.getDeadPlayerService().isDead(player)) {
             return;
         }
         ItemStack item = event.getCurrentItem();

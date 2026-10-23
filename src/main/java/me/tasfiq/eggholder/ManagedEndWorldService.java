@@ -1,9 +1,9 @@
 package me.tasfiq.eggholder;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -268,12 +268,17 @@ public final class ManagedEndWorldService {
             return;
         }
 
-        File targetFile = new File(plugin.getDataFolder(), extractedSchematicPath);
-        File parent = targetFile.getParentFile();
-        if (parent != null && !parent.exists()) {
-            parent.mkdirs();
+        Path dataFolder = plugin.getDataFolder().toPath().toAbsolutePath().normalize();
+        Path targetFile = dataFolder.resolve(extractedSchematicPath).normalize();
+        if (targetFile.equals(dataFolder) || !targetFile.startsWith(dataFolder)) {
+            throw new IOException("managed-end-world.extracted-file must stay inside the plugin data folder");
         }
-        if (targetFile.exists() && !overwriteExtractedSchematic) {
+
+        Path parent = targetFile.getParent();
+        if (parent != null) {
+            Files.createDirectories(parent);
+        }
+        if (Files.exists(targetFile) && !overwriteExtractedSchematic) {
             return;
         }
 
@@ -281,7 +286,7 @@ public final class ManagedEndWorldService {
             if (resource == null) {
                 throw new IOException("Bundled schematic resource not found: " + schematicResourcePath);
             }
-            Files.copy(resource, targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(resource, targetFile, StandardCopyOption.REPLACE_EXISTING);
         }
     }
 

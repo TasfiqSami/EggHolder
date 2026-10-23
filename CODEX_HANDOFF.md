@@ -23,8 +23,11 @@ The current changes are not yet pushed/released unless this section is updated a
 - `/endwar audience close|resolve` now reports accurately when no vote is open. `EndWarService.closeAudienceVote` returns success/failure.
 - `/eggholder add` now requires an exact online player name instead of Bukkit’s ambiguous partial match. Tab completion supplies online candidates.
 - Improved `/eggholder` and `/team` usage text.
+- Dead players can no longer deal melee or player-fired projectile damage; kit/team/audience/teleport GUI handlers now reject dead or mismatched viewers.
+- Cancelled block placement/break events no longer update bridge-collapse tracking.
+- Extracted schematic paths are normalized and constrained to the plugin data directory, preventing accidental `../` path escape.
 - Version set to `2.2.0` in `pom.xml` and `plugin.yml`.
-- Final verification required: Maven `clean verify` against Paper API 1.20.6 and 1.21.11 after the final code edits. These are compile/API/resource checks, not live-server command tests.
+- Final verification required after the security changes: Maven `clean verify` against Paper API 1.20.6 and 1.21.11. These are compile/API/resource checks, not live-server command tests.
 - Release artifact should be `target/EggHolder.jar`, uploaded as the asset for GitHub release `v2.2.0` after push.
 
 ## Next tasks — important

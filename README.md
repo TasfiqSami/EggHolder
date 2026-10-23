@@ -99,6 +99,8 @@ Important operator note:
 - Audience vote close/resolve commands now report when no vote is open.
 - EggHolder assignment uses exact online player names to avoid selecting the wrong target from an ambiguous partial name.
 - Command usage messages now show the required player and team arguments more clearly.
+- Eliminated players can no longer damage living players with melee or player-fired projectiles, or trigger actions through stale kit/team/audience menus.
+- Cancelled block events no longer enter or corrupt the bridge-collapse tracker, and extracted schematic paths are constrained to the plugin data folder.
 
 ## Main Game Loop
 

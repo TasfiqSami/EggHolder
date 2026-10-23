@@ -686,12 +686,12 @@ public final class TeamService implements Listener {
         if (!(event.getWhoClicked() instanceof Player player)) {
             return;
         }
-        if (!(event.getView().getTopInventory().getHolder() instanceof TeamMenuHolder holder) || !holder.viewer().equals(player.getUniqueId())) {
+        if (!(event.getView().getTopInventory().getHolder() instanceof TeamMenuHolder holder)) {
             return;
         }
 
         event.setCancelled(true);
-        if (plugin.getDeadPlayerService().isDead(player)) {
+        if (!holder.viewer().equals(player.getUniqueId()) || plugin.getDeadPlayerService().isDead(player)) {
             return;
         }
         ItemStack clicked = event.getCurrentItem();

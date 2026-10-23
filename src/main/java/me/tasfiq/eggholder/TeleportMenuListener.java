@@ -70,13 +70,14 @@ public final class TeleportMenuListener implements Listener {
             return;
         }
 
-        if (!(event.getView().getTopInventory().getHolder() instanceof DeadPlayerService.TeleportMenuHolder holder)
-                || !holder.viewerUuid().equals(player.getUniqueId())
-                || !deadPlayerService.isDead(player)) {
+        if (!(event.getView().getTopInventory().getHolder() instanceof DeadPlayerService.TeleportMenuHolder holder)) {
             return;
         }
 
         event.setCancelled(true);
+        if (!holder.viewerUuid().equals(player.getUniqueId()) || !deadPlayerService.isDead(player)) {
+            return;
+        }
 
         ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem == null || !clickedItem.hasItemMeta()) {
