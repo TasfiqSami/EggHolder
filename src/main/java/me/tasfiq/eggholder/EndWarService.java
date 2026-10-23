@@ -398,6 +398,7 @@ public final class EndWarService implements Listener {
             return false;
         }
 
+        restoreSpawnPlatforms();
         cleanupRuntimeEntities();
         trackedEgg = null;
         audienceVote = null;

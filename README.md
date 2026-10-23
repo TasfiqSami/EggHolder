@@ -605,6 +605,12 @@ If you are a participant:
 mvn clean package
 ```
 
+This also runs the automated resource and configuration contract tests. To run the tests without packaging:
+
+```bash
+mvn test
+```
+
 The final jar will be created at:
 
 ```text
