@@ -632,7 +632,7 @@ target/EggHolder.jar
 
 ## GitHub Packages (Maven)
 
-The Maven artifact is published to [GitHub Packages](https://github.com/TasfiqSami/EggHolder/packages) for developers who want to consume EggHolder as a Maven dependency.
+The Maven artifact is published to [GitHub Packages](https://github.com/TasfiqSami/EggHolder/packages) for developers who want to consume EggHolder as a Maven dependency. Every branch push builds and tests the project, then publishes a unique version like `2.1.0-ci.42.1`. The stable release version remains `2.1.0` until the next release version is set in `pom.xml`.
 
 Coordinates for the current release:
 

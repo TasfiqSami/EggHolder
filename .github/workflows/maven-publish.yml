@@ -1,11 +1,12 @@
-# Publishes the Maven artifact to GitHub Packages on each GitHub release.
-# Can also be started manually from Actions for an existing release.
+# Publishes a uniquely versioned Maven artifact to GitHub Packages on every branch push.
+# Can also be started manually from Actions.
 
 name: Maven Package
 
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - '**'
   workflow_dispatch:
 
 jobs:
@@ -27,7 +28,7 @@ jobs:
           server-username: GITHUB_ACTOR
           server-password: GITHUB_TOKEN
       - name: Publish Maven package
-        run: mvn --batch-mode --no-transfer-progress deploy
+        run: mvn --batch-mode --no-transfer-progress deploy "-Drevision=2.1.0-ci.${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}"
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
