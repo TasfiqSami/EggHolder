@@ -53,7 +53,20 @@ So even if someone does not know the event beforehand, they can think of it like
 - `Java 21`
 - Maven only if you want to build from source
 
-Supported software includes Paper and Paper API forks such as Purpur and Pufferfish (where that Minecraft version is available). The plugin uses the standard Bukkit scheduler, so it is not Folia-compatible. Spigot is not currently targeted. CI compiles against Paper API 1.20.6 and 1.21.11. Optional newer gear adapts on older supported versions: Netherite Spears fall back to tridents, Maces fall back to Netherite axes if unavailable, and unknown enchantments are skipped.
+### Server Software Compatibility
+
+EggHolder is a **Paper API plugin**, not a mod-loader mod. Compatibility depends on the server providing the Paper APIs used by the plugin and behaving like a normal single-threaded Bukkit/Paper server.
+
+| Server software | Support status | Notes |
+|---|---|---|
+| Paper | Supported | API compatibility is compiled in CI against 1.20.6 and 1.21.11. |
+| Purpur | Supported as a Paper-compatible fork | Use a Minecraft version in the supported range. |
+| Pufferfish, Leaf, Gale | Paper-fork compatible; not separately runtime-tested | These are included as best-effort compatible software. Report issues with the exact server build and version. |
+| Spigot | Not supported yet | This build directly uses Paper-only API classes and methods (including registry and Adventure integrations). Listing Spigot as supported would be misleading; it needs a compatibility port and Spigot runtime tests first. |
+| Folia | Not supported | The plugin uses Bukkit's standard scheduler and has not been adapted to Folia's region and entity schedulers. Setting a Folia support flag alone would not make it safe. |
+| Forge / NeoForge / Fabric / Quilt | Not directly supported | These are mod loaders, not Bukkit/Paper plugin runtimes. A hybrid server that embeds Bukkit may load some plugins, but EggHolder is not tested or supported on those hybrids. |
+
+Paper and Purpur are the recommended supported choices. Leaf, Gale, and Pufferfish are now explicitly included as best-effort Paper-fork compatible software, but EggHolder has not been run on them. Plain Spigot is not yet supported because this build uses Paper-only APIs; the required compatibility port and live tests have not been done. CI compiles against Paper API 1.20.6 and 1.21.11; this is API compilation coverage, not live-server runtime testing. Optional newer gear adapts on older supported versions: Netherite Spears fall back to tridents, Maces fall back to Netherite axes if unavailable, and unknown enchantments are skipped.
 
 ## Managed End Map
 
