@@ -7,8 +7,10 @@ This is the continuation note for future Codex sessions. Read **Current status**
 - Repository: `https://github.com/TasfiqSami/EggHolder`
 - Workspace: `D:\Tasfiq\EggHolder\EggHolder`
 - Main branch; remote `origin` points to the repository above.
-- Latest published GitHub release before this work: `v2.1.0` (`v2.0.0` also exists).
-- Current work prepares `2.2.0`; release must only be marked complete after the commit is pushed, the release is created, and its attached jar is verified.
+- Latest published GitHub release: `v2.2.0` (`v2.1.0` and `v2.0.0` remain available).
+- Release URL: `https://github.com/TasfiqSami/EggHolder/releases/tag/v2.2.0`.
+- Release asset: `EggHolder.jar`, 287,397 bytes, SHA-256 `3F292DA20FE65461B2E22B1C646ADCEA9B973C3D994B0351BD0E7561F688B049`.
+- Release tag points to commit `35c79511403cf3cd56fdbfb52f3ec43c30b87ef1` on `main`.
 - Modrinth project already exists: title EggHolder, slug `eggholder`, ID `jm0TqH0V`; intended plugin route `https://modrinth.com/plugin/eggholder`. Do not create a duplicate project.
 - Last known Modrinth state from prior check: project was `processing` with approval requested; version 2.1.0 (`laOokhbA`) was listed. Recheck status before any future upload or page edits.
 - The user asked to preserve the encrypted Modrinth token file. **Do not delete** `%LOCALAPPDATA%\Modrinth\eggholder-token.dpapi`; never print, paste, commit, or put a token in this file. Do not re-use the old token that was pasted into chat.
@@ -16,7 +18,7 @@ This is the continuation note for future Codex sessions. Read **Current status**
 
 ## Latest work in progress — v2.2.0
 
-The current changes are not yet pushed/released unless this section is updated after publication:
+The v2.2.0 work is pushed and released:
 
 - Managed End startup and lazy preparation now call `prepareWorld(false)`, so routine map preparation respects `managed-end-world.clear-region-first`; explicit `/endwar world prepare` still forces a clean rebuild.
 - Added prominent config and README notes explaining that startup preparation edits the configured End world, and that clearing removes blocks inside schematic bounds. `prepare-on-startup: false` defers this work until `/start`; `clear-region-first: false` overlays the schematic during routine prep.
@@ -27,18 +29,16 @@ The current changes are not yet pushed/released unless this section is updated a
 - Cancelled block placement/break events no longer update bridge-collapse tracking.
 - Extracted schematic paths are normalized and constrained to the plugin data directory, preventing accidental `../` path escape.
 - Version set to `2.2.0` in `pom.xml` and `plugin.yml`.
-- Final verification required after the security changes: Maven `clean verify` against Paper API 1.20.6 and 1.21.11. These are compile/API/resource checks, not live-server command tests.
-- Release artifact should be `target/EggHolder.jar`, uploaded as the asset for GitHub release `v2.2.0` after push.
+- Final verification passed after the security changes: `mvn -B clean verify` with Paper API 1.20.6 and `mvn -B clean -Dpaper.version=1.21.11-R0.1-SNAPSHOT verify`; all 4 automated tests passed at both endpoints.
+- CI run `40020460030` and Maven package run `40020460048` both succeeded for commit `35c7951`.
+- GitHub release asset was uploaded and its GitHub SHA-256 digest matched the local jar hash above.
 
 ## Next tasks — important
 
-1. Finish both endpoint builds and ensure all 4 automated resource/config tests pass at each endpoint.
-2. Review final diff and working tree; ensure no token or private credential entered files or logs.
-3. Update this handoff with verified test results, commit SHA, release URL, release asset SHA-256, workflow run links, and any remaining limitations.
-4. Commit and push the finished changes to `main`. The push should trigger CI and the GitHub Packages Maven deployment workflow automatically. Verify both workflows complete successfully.
-5. Create GitHub release `v2.2.0`, attach the final `target/EggHolder.jar`, and verify the release asset/download and hash.
-6. Do not claim every command “works in game” solely based on compilation. The source has been reviewed and commands compile; a Paper runtime smoke test remains unperformed because no live plugin test was requested/performed.
-7. Recheck Modrinth moderation/listing when continuing that separate publication task. The current user specifically requested release in GitHub; do not upload a new Modrinth version unless the user again asks or clearly includes it.
+1. If continuing Modrinth work, check moderation/listing for project `jm0TqH0V`, and update its description or upload v2.2.0 only when review status and user scope allow it. The latest request asked for GitHub release; no v2.2.0 Modrinth upload was made.
+2. A live Paper runtime smoke test of command behavior/security remains unperformed. The user earlier asked for source fixes without a real plugin test; do not describe compile/API checks as runtime validation.
+3. On future changes, review GitHub push CI and Maven package workflows, update README and this handoff, and publish a new release only when requested.
+4. Continue reporting concrete verification limits; the source-level security review does not establish that every third-party plugin combination or server runtime is vulnerability-free.
 
 ## User goals and usual requests
 
