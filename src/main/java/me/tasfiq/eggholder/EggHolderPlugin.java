@@ -19,6 +19,7 @@ public final class EggHolderPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        ConfigValidator.validate(this);
         this.messageManager = new MessageManager(this);
         this.messageManager.load();
         this.pluginConfig = PluginConfig.load(this);
@@ -72,6 +73,7 @@ public final class EggHolderPlugin extends JavaPlugin {
 
     public void reloadPluginFiles() {
         reloadConfig();
+        ConfigValidator.validate(this);
         messageManager.load();
         pluginConfig = PluginConfig.load(this);
         if (managedEndWorldService != null) {

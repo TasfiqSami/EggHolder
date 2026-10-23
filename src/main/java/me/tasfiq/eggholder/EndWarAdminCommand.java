@@ -52,6 +52,13 @@ public final class EndWarAdminCommand implements CommandExecutor, TabCompleter {
                 plugin.getMessageManager().sendPrefixed(sender, "game-stopped-admin");
                 return true;
             }
+            case "status" -> {
+                sender.sendMessage(TextUtil.component("&8&m---------------- &dEggHolder Status &8&m----------------"));
+                for (String line : endWarService.getOperatorStatusLines()) {
+                    sender.sendMessage(TextUtil.component(line));
+                }
+                return true;
+            }
             case "feature" -> {
                 return handleFeatureCommand(sender, label, args);
             }
@@ -194,7 +201,7 @@ public final class EndWarAdminCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 1) {
-            return partial(args[0], List.of("start", "stop", "feature", "audience", "world"));
+            return partial(args[0], List.of("start", "stop", "status", "feature", "audience", "world"));
         }
         if (args.length == 2) {
             if (args[0].equalsIgnoreCase("feature")) {

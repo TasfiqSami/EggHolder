@@ -59,6 +59,7 @@ public final class KitService implements Listener {
 
     public void reload() {
         kitsFile.load();
+        ConfigValidator.validateResource(plugin, "kits.yml", kitsFile.getConfiguration());
         kits.clear();
 
         FileConfiguration config = plugin.getConfig();

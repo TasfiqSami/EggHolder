@@ -319,6 +319,83 @@ public final class EndWarService implements Listener {
         return ids;
     }
 
+    public List<String> getOperatorStatusLines() {
+        long now = System.currentTimeMillis();
+        List<String> lines = new ArrayList<>();
+        String holderName = plugin.getEggHolderService().getCurrentHolderName();
+        lines.add("&7Phase: &f" + getDisplayPhase());
+        lines.add("&7EggHolder: &f" + (holderName == null ? "None" : holderName));
+        lines.add("&7Match elapsed: &f" + (matchStartedAtMillis == 0L ? "Not started" : formatDuration((now - matchStartedAtMillis) / 1000L)));
+
+        StringBuilder features = new StringBuilder("&7Features: ");
+        for (Feature feature : Feature.values()) {
+            if (features.length() > 11) {
+                features.append("&8, ");
+            }
+            features.append(isFeatureEnabled(feature) ? "&a" : "&c")
+                    .append(feature.id()).append(isFeatureEnabled(feature) ? " ON" : " OFF");
+        }
+        lines.add(features.toString());
+
+        if (isGameRunning()) {
+            lines.add("&7Next events: &fStorm " + remainingUntil(nextStormAtMillis, isFeatureEnabled(Feature.END_STORM))
+                    + "&7, Hotspot " + remainingUntil(nextHotspotAtMillis, isFeatureEnabled(Feature.HOTSPOT_ROTATION))
+                    + "&7, Supply " + remainingUntil(nextSupplyDropAtMillis, isFeatureEnabled(Feature.SUPPLY_DROPS))
+                    + "&7, Bridge wave " + remainingUntil(nextBridgeCollapseAtMillis, isFeatureEnabled(Feature.BRIDGE_COLLAPSE_EVENT)));
+            lines.add("&7Phases: &fOvertime " + phaseRemaining(matchStartedAtMillis, overtimeAfterSeconds, overtimeTriggered, isFeatureEnabled(Feature.OVERTIME_WIN_CONDITION))
+                    + "&7, Merciless " + phaseRemaining(matchStartedAtMillis, mercylessAfterSeconds, mercylessTriggered, isFeatureEnabled(Feature.MERCILESS_ENDGAME))
+                    + "&7, No Escape " + phaseRemaining(matchStartedAtMillis, noEscapeAfterSeconds, noEscapeTriggered, isFeatureEnabled(Feature.NO_ESCAPE_TIMER)));
+        }
+        if (trackedEgg != null) {
+            long eggBurnAt = trackedEgg.spawnedAtMillis() + eggBurnSeconds * 1000L;
+            lines.add("&7Dropped egg: &f" + (isFeatureEnabled(Feature.EGG_BURN_TIMER)
+                    ? remainingUntil(eggBurnAt, true) + " until reset" : "burn timer disabled"));
+            if (trackedEgg.pickupLockedUntilMillis() > now) {
+                lines.add("&7Egg pickup unlock: &f" + formatDuration((trackedEgg.pickupLockedUntilMillis() - now + 999L) / 1000L));
+            }
+        }
+        if (hotspot != null) {
+            lines.add("&7Active hotspot expires: &f" + remainingUntil(hotspot.expiresAtMillis(), true));
+        }
+        if (activeSupplyDrop != null) {
+            lines.add("&7Supply drop: &f" + (activeSupplyDrop.landed() ? "landed" : "falling"));
+        }
+        if (audienceVote != null) {
+            lines.add("&7Audience vote closes: &f" + remainingUntil(audienceVote.expiresAtMillis(), true));
+        }
+        return lines;
+    }
+
+    private String phaseRemaining(long startedAt, long delaySeconds, boolean triggered, boolean enabled) {
+        if (!enabled) {
+            return "off";
+        }
+        if (triggered) {
+            return "active";
+        }
+        if (startedAt <= 0L) {
+            return "pending";
+        }
+        return remainingUntil(startedAt + delaySeconds * 1000L, startedAt > 0L);
+    }
+
+    private String remainingUntil(long timestamp, boolean scheduled) {
+        if (!scheduled) {
+            return "off";
+        }
+        return formatDuration(Math.max(0L, (timestamp - System.currentTimeMillis() + 999L) / 1000L));
+    }
+
+    private String formatDuration(long totalSeconds) {
+        long seconds = Math.max(0L, totalSeconds);
+        long hours = seconds / 3600L;
+        long minutes = (seconds % 3600L) / 60L;
+        long remainder = seconds % 60L;
+        return hours > 0L
+                ? String.format(Locale.ROOT, "%d:%02d:%02d", hours, minutes, remainder)
+                : String.format(Locale.ROOT, "%d:%02d", minutes, remainder);
+    }
+
     public boolean setFeature(String rawId, boolean enabled) {
         Feature feature = Feature.fromId(rawId);
         if (feature == null) {
@@ -2376,6 +2453,9 @@ public final class EndWarService implements Listener {
                 return null;
             }
             int duration = parseInt(rawMap.get("duration"), 100);
+            if (duration <= 0) {
+                duration = 100;
+            }
             int amplifier = Math.max(0, parseInt(rawMap.get("amplifier"), 0));
             boolean ambient = parseBoolean(rawMap.get("ambient"), false);
             boolean particles = parseBoolean(rawMap.get("particles"), true);

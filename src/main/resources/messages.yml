@@ -91,7 +91,7 @@ game-start-failed: "&cThe End War could not start. Check the managed End world s
 game-started-admin: "&aEnd War start sequence initiated."
 game-stopped-admin: "&eEnd War has been stopped."
 
-endwar-usage: "&cUsage: /%label% <start|stop|feature|audience|world>"
+endwar-usage: "&cUsage: /%label% <start|stop|status|feature|audience|world>"
 endwar-feature-usage: "&cUsage: /%label% feature <feature> <on|off|trigger>"
 endwar-feature-invalid: "&cUnknown feature: &f%feature%"
 endwar-feature-set: "&aFeature &f%feature% &ais now &f%state%&a."

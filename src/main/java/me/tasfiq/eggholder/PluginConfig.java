@@ -1167,7 +1167,11 @@ public final class PluginConfig {
                 type = PotionEffectType.SPEED;
             }
 
-            int duration = parseInt(rawMap.get("duration"), -1);
+            int duration = parseInt(rawMap.get("duration"), 100);
+            if (duration <= 0 && duration != -1) {
+                plugin.getLogger().warning("Invalid potion effect duration '" + rawMap.get("duration") + "'. Falling back to 100 ticks.");
+                duration = 100;
+            }
             int amplifier = Math.max(0, parseInt(rawMap.get("amplifier"), 0));
             boolean ambient = parseBoolean(rawMap.get("ambient"), false);
             boolean particles = parseBoolean(rawMap.get("particles"), true);
@@ -1175,7 +1179,7 @@ public final class PluginConfig {
 
             return new ConfiguredPotionEffectDefinition(
                     type,
-                    duration < 0 ? Integer.MAX_VALUE : duration,
+                    duration == -1 ? Integer.MAX_VALUE : duration,
                     amplifier,
                     ambient,
                     particles,
