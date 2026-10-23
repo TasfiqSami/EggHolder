@@ -434,9 +434,14 @@ public final class EndWarService implements Listener {
     }
 
     public void stopGame() {
+        if (matchState == MatchState.LOBBY || matchState == MatchState.ENDED) {
+            return;
+        }
         matchState = MatchState.ENDED;
         cleanupRuntimeEntities();
         restoreStartPortalArea();
+        plugin.getEggHolderService().removeHolder(EggHolderService.RemovalReason.COMMAND, false);
+        plugin.getDeadPlayerService().restoreAllEliminatedPlayers();
         revengeMarkedUntil.clear();
         holderDamage.clear();
         entryProtectionUntil.clear();

@@ -44,7 +44,7 @@ public final class DeadPlayerService implements Listener {
 
     private PluginConfig config;
     private final Map<UUID, DeadPlayerState> deadPlayers = new LinkedHashMap<>();
-    private final Map<UUID, Location> pendingReviveLocations = new LinkedHashMap<>();
+    private final Map<UUID, PendingRevive> pendingRevives = new LinkedHashMap<>();
 
     public DeadPlayerService(EggHolderPlugin plugin) {
         this.plugin = plugin;
@@ -61,7 +61,7 @@ public final class DeadPlayerService implements Listener {
             }
         }
         deadPlayers.clear();
-        pendingReviveLocations.clear();
+        pendingRevives.clear();
         showEveryoneToEveryone();
         refreshVisibilityForAll();
     }
@@ -77,7 +77,7 @@ public final class DeadPlayerService implements Listener {
                 }
             }
             deadPlayers.clear();
-            pendingReviveLocations.clear();
+            pendingRevives.clear();
             showEveryoneToEveryone();
             refreshVisibilityForAll();
             return;
@@ -148,9 +148,7 @@ public final class DeadPlayerService implements Listener {
             return true;
         }
 
-        if (reviveLocation != null) {
-            pendingReviveLocations.put(targetUuid, reviveLocation);
-        }
+        pendingRevives.put(targetUuid, new PendingRevive(state, reviveLocation));
         return true;
     }
 
@@ -159,7 +157,7 @@ public final class DeadPlayerService implements Listener {
             return;
         }
 
-        pendingReviveLocations.remove(uuid);
+        pendingRevives.remove(uuid);
         deadPlayers.put(uuid, DeadPlayerState.offline(uuid, playerName, deathLocation));
 
         Player onlinePlayer = Bukkit.getPlayer(uuid);
@@ -243,11 +241,13 @@ public final class DeadPlayerService implements Listener {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
 
-        if (pendingReviveLocations.containsKey(uuid)) {
-            Location reviveLocation = pendingReviveLocations.remove(uuid);
+        if (pendingRevives.containsKey(uuid)) {
+            PendingRevive pendingRevive = pendingRevives.remove(uuid);
             Bukkit.getScheduler().runTask(plugin, () -> {
-                restorePendingOfflineReviveState(player);
-                player.teleport(reviveLocation);
+                restorePendingOfflineReviveState(player, pendingRevive.state());
+                if (pendingRevive.location() != null) {
+                    player.teleport(pendingRevive.location());
+                }
                 resetRevivedPlayerState(player);
                 refreshVisibilityForAll();
                 plugin.getEggHolderService().syncHolderFromInventory(player);
@@ -409,7 +409,7 @@ public final class DeadPlayerService implements Listener {
         player.setGameMode(state.previousGameMode());
         player.setAllowFlight(state.previousAllowFlight());
         player.setFlying(state.previousAllowFlight() && state.previousFlying());
-        player.setInvulnerable(false);
+        player.setInvulnerable(state.previousInvulnerable());
         player.setCollidable(state.previousCollidable());
         player.setCanPickupItems(state.previousCanPickupItems());
         TextUtil.setPlayerListName(player, TextUtil.safePlayerListName(state.previousListName(), player.getName()));
@@ -433,19 +433,37 @@ public final class DeadPlayerService implements Listener {
         });
     }
 
-    private void restorePendingOfflineReviveState(Player player) {
+    private void restorePendingOfflineReviveState(Player player, DeadPlayerState state) {
         player.closeInventory();
         removeTeleporterItems(player.getInventory());
         if (plugin.getEndWarService() != null) {
             plugin.getEndWarService().clearAudienceState(player);
         }
-        player.setGameMode(GameMode.SURVIVAL);
-        player.setAllowFlight(false);
-        player.setFlying(false);
-        player.setInvulnerable(false);
-        player.setCollidable(true);
-        player.setCanPickupItems(true);
-        TextUtil.setPlayerListName(player, player.getName());
+        if (state.initialized()) {
+            restoreAliveState(player, state);
+        } else {
+            player.setGameMode(GameMode.SURVIVAL);
+            player.setAllowFlight(false);
+            player.setFlying(false);
+            player.setInvulnerable(false);
+            player.setCollidable(true);
+            player.setCanPickupItems(true);
+            TextUtil.setPlayerListName(player, player.getName());
+        }
+    }
+
+    /** Restores every online eliminated player when an event is stopped or the plugin is disabled. */
+    public void restoreAllEliminatedPlayers() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            DeadPlayerState state = deadPlayers.get(player.getUniqueId());
+            if (state != null) {
+                restoreAliveState(player, state);
+            }
+        }
+        deadPlayers.clear();
+        pendingRevives.clear();
+        showEveryoneToEveryone();
+        refreshVisibilityForAll();
     }
 
     private Location resolveReviveLocation(DeadPlayerState state) {
@@ -577,6 +595,7 @@ public final class DeadPlayerService implements Listener {
         private GameMode previousGameMode;
         private boolean previousAllowFlight;
         private boolean previousFlying;
+        private boolean previousInvulnerable;
         private boolean previousCollidable;
         private boolean previousCanPickupItems;
         private String previousListName;
@@ -601,6 +620,7 @@ public final class DeadPlayerService implements Listener {
             this.previousGameMode = player.getGameMode();
             this.previousAllowFlight = player.getAllowFlight();
             this.previousFlying = player.isFlying();
+            this.previousInvulnerable = player.isInvulnerable();
             this.previousCollidable = player.isCollidable();
             this.previousCanPickupItems = player.getCanPickupItems();
             this.previousListName = TextUtil.getPlayerListName(player);
@@ -638,6 +658,10 @@ public final class DeadPlayerService implements Listener {
             return previousFlying;
         }
 
+        private boolean previousInvulnerable() {
+            return previousInvulnerable;
+        }
+
         private boolean previousCollidable() {
             return previousCollidable;
         }
@@ -656,6 +680,17 @@ public final class DeadPlayerService implements Listener {
 
         private void setReplacedTeleporterSlotItem(ItemStack replacedTeleporterSlotItem) {
             this.replacedTeleporterSlotItem = replacedTeleporterSlotItem == null ? null : replacedTeleporterSlotItem.clone();
+        }
+    }
+
+    private record PendingRevive(DeadPlayerState state, Location location) {
+        private PendingRevive {
+            location = location == null ? null : location.clone();
+        }
+
+        @Override
+        public Location location() {
+            return location == null ? null : location.clone();
         }
     }
 }
