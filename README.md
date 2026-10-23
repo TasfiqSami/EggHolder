@@ -53,6 +53,11 @@ So even if someone does not know the event beforehand, they can think of it like
 - `Java 21`
 - Maven only if you want to build from source
 
+## Downloads
+
+- [GitHub release 2.2.2](https://github.com/TasfiqSami/EggHolder/releases/tag/v2.2.2) — includes `EggHolder.jar`.
+- [Modrinth 2.2.2 jar](https://cdn.modrinth.com/data/jm0TqH0V/versions/KeGPGUrf/EggHolder.jar). The existing Modrinth project is still being reviewed, so its public listing may not appear in search yet.
+
 ### Server Software Compatibility
 
 EggHolder is a **Paper API plugin**, not a mod-loader mod. Compatibility depends on the server providing the Paper APIs used by the plugin and behaving like a normal single-threaded Bukkit/Paper server.

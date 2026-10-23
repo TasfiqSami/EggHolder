@@ -7,31 +7,37 @@ This is the continuation note for future Codex sessions. Read **Current status**
 - Repository: `https://github.com/TasfiqSami/EggHolder`
 - Workspace: `D:\Tasfiq\EggHolder\EggHolder`
 - Main branch; remote `origin` points to the repository above.
-- Latest published GitHub release before this work: `v2.2.0`; this session is preparing `v2.2.2` after runtime testing found a release-blocking exception. Do not describe v2.2.2 as published until verified below.
+- Latest GitHub release: [`v2.2.2`](https://github.com/TasfiqSami/EggHolder/releases/tag/v2.2.2).
+- Release asset: [`EggHolder.jar`](https://github.com/TasfiqSami/EggHolder/releases/download/v2.2.2/EggHolder.jar), 287,562 bytes, SHA-256 `F3B1925FA09722CA164E642A7D0FEF1D5E25B304CA0619A82A764345C88BF2F3`.
+- Release tag points at commit `bb7d6cb5d6b4400bf002e28ab3fa89aecf0e36f8` on `main` (later documentation pushes may advance main; the release tag remains the source of this jar).
 - Modrinth project already exists: title EggHolder, slug `eggholder`, ID `jm0TqH0V`; intended plugin route `https://modrinth.com/plugin/eggholder`. Do not create a duplicate project.
-- Last known Modrinth state from prior check: project was `processing` with approval requested; version 2.1.0 (`laOokhbA`) was listed. Recheck status before any future upload or page edits.
+- Latest Modrinth state: project is still `processing` with approval requested; v2.2.2 (`KeGPGUrf`) is uploaded/listed beside 2.1.0 and 2.0.0. Public search/listing visibility is unconfirmed until project approval.
+- Modrinth direct v2.2.2 file: `https://cdn.modrinth.com/data/jm0TqH0V/versions/KeGPGUrf/EggHolder.jar`.
 - The user asked to preserve the encrypted Modrinth token file. **Do not delete** `%LOCALAPPDATA%\Modrinth\eggholder-token.dpapi`; never print, paste, commit, or put a token in this file. Do not re-use the old token that was pasted into chat.
-- Paper 1.21.11 runtime smoke test found and reproduced `Team colors must have hex values` exceptions in `SidebarService.syncTeamsFromMain`, breaking lobby sidebar refresh, `/endwar start`, and `/endwar stop`. Fix underway: do not copy the Bukkit team color into per-player sidebars; their prefixes still carry the configured color.
+- Fixed Paper 1.21.11 `Team colors must have hex values` exceptions in `SidebarService.syncTeamsFromMain` by no longer copying team colors into per-player sidebars; configured colored prefixes remain intact.
 - The same server smoke test confirmed managed End startup and 10 crystal anchors, `/eggholder reload`, `/endwar world status`, feature on/off and invalid-feature handling, EggHolder add/remove invalid-target handling, revive invalid-target handling, audience open/close/resolve, and interactive team create/invite/accept/rename/kick/disband/leave/menu flows.
-- Two local offline-mode Mineflayer bots connected to an isolated localhost Paper server for command/GUI checks. Do not extrapolate this into a full match or combat-balance test.
+- Two local offline-mode Mineflayer bots connected to an isolated localhost Paper server for command/GUI checks. `/endwar start`, duplicate start rejection, `/endwar stop`, and managed-world status succeeded after the fix. Latest Paper log had zero EggHolder warnings/errors, command exceptions, or failed event handlers. This is not a full match or combat-balance test.
 
 ## Latest work in progress — v2.2.2
 
-The v2.2.0 work is pushed and released. v2.2.2 addresses runtime issues found by launching a real Paper 1.21.11 server:
+v2.2.2 is built, runtime-checked, pushed, and released. It addresses issues found by launching a real Paper 1.21.11 server:
 
 - Removed copying of named Bukkit team colors into each player's scoreboard. Paper 1.21.11 requires hex team colors there; colored prefixes remain intact, avoiding exceptions during sidebar refresh and event start/stop.
 - Map legacy `minecraft:chain` schematic states to `minecraft:iron_chain` for modern server parsing.
 - Consolidated the prior two GitHub workflow definitions into one CI/package workflow. It tests both API endpoints, publishes packages only on pushes after tests pass, and derives CI package versions from the current Maven revision. This should make one workflow run per push (CI shows two matrix jobs and one dependent publish job).
 - Added README release notes and updated Maven package docs to version 2.2.2.
-- Runtime testing found the bug before publishing. Rebuild the jar after fixes, rerun tests and Paper smoke tests, then update this handoff with verified release URLs/digests/workflow status.
+- Final `mvn -B clean verify` on Paper API 1.20.6 and `mvn -B clean -Dpaper.version=1.21.11-R0.1-SNAPSHOT verify` passed; both ran all 5 contract tests. The 1.21.11 endpoint jar was attached to the release.
+- Isolated Paper 1.21.11 v2.2.2 startup prepared the bundled map with 10 crystal anchors and no unsupported schematic warning. Bot-driven team workflows and audience controls succeeded. Match start, duplicate start response, stop, and world status succeeded without EggHolder errors.
+- GitHub release asset digest matched local SHA-256 `F3B1925FA09722CA164E642A7D0FEF1D5E25B304CA0619A82A764345C88BF2F3`.
+- GitHub workflow run `40022133749` passed both API matrix builds and the GitHub Packages publish job.
+- Modrinth version `2.2.2` ID `KeGPGUrf` uploaded to existing project `jm0TqH0V`; Paper/Purpur metadata for 1.20.6–1.21.11, `EggHolder.jar`, 287,562 bytes. Project review remains processing. Modrinth Modify Project API does not expose `project_type`, so type/route correction is unresolved; do not delete/recreate based on a guess. Seek dashboard/support guidance after review.
 
 ## Next tasks — important
 
-1. Finish v2.2.2 two-endpoint Maven verification and a clean Paper 1.21.11 restart/match start/stop check. Confirm no new plugin exceptions in latest.log.
-2. Publish GitHub release `v2.2.2` and attach `target/EggHolder.jar`; verify asset digest and release tag.
-3. Push the consolidated workflow, confirm exactly one workflow run per push, and verify its Maven package publish job succeeded with a version derived from 2.2.2.
-4. Check the existing Modrinth project `jm0TqH0V` moderation state. If it accepts a new file while preserving the existing project and no credential needs to be exposed, upload the same release jar and record the version. Keep the encrypted token file untouched.
-5. Update this handoff with results, release links and any remaining limits. Full match balance, Folia, plain Spigot, and every third-party fork are not covered by the localhost Paper smoke test.
+1. Check whether Modrinth approved project `jm0TqH0V`. If still processing, use dashboard/support to request the public plugin classification/route. v2.2.2 is already uploaded; do not duplicate it.
+2. Future code pushes should use the consolidated one-workflow CI/package action; latest run `40022133749` passed all jobs and published Maven package.
+3. Full competitive match balance, death/revive interactions, Paper API 1.20.6 live runtime, Spigot runtime, and Folia are not covered by the localhost Paper 1.21.11 smoke test.
+4. Preserve `%LOCALAPPDATA%\Modrinth\eggholder-token.dpapi`; never put credentials in the repository or Markdown.
 
 ## User goals and usual requests
 
@@ -61,8 +67,8 @@ Communication preference: execute authorized work instead of repeatedly asking f
 - GitHub repository: `TasfiqSami/EggHolder`.
 - GitHub Releases known before v2.2.0: `v2.1.0` and `v2.0.0`.
 - GitHub Packages Maven coordinates: `me.tasfiq:eggholder`; repository `https://maven.pkg.github.com/TasfiqSami/EggHolder`.
-- `.github/workflows/maven.yml` is being consolidated into the only workflow: tests Paper API 1.20.6 and 1.21.11 using Java 21, then publishes Maven package on push after checks pass.
-- CI package version is based on `<revision>` from `pom.xml`, suffixed with `-ci.<run_number>.<attempt>`, using Actions `GITHUB_TOKEN` and `packages: write`. It should not need the Modrinth token.
+- `.github/workflows/maven.yml` is the only workflow: tests Paper API 1.20.6 and 1.21.11 using Java 21, then publishes Maven package on push after checks pass. Run `40022133749` passed two matrix builds and publish.
+- CI package version is based on `<revision>` from `pom.xml`, suffixed with `-ci.<run_number>.<attempt>`, using Actions `GITHUB_TOKEN` and `packages: write`. It does not need the Modrinth token.
 - An optional dependency graph submission is allowed to fail because GitHub returned 403 on it previously; this is separate from Maven CI/package publication.
 - Always inspect `git status`, branch, and current remote before publishing. Check for an already-existing release/tag to avoid duplicates.
 
