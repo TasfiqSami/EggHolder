@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -53,9 +52,11 @@ class ResourceContractTest {
     private YamlConfiguration load(String name) {
         InputStream stream = getClass().getClassLoader().getResourceAsStream(name);
         assertNotNull(stream, "Missing bundled resource " + name);
-        try (InputStream input = stream;
-                InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8)) {
-            return YamlConfiguration.loadConfiguration(reader);
+        try (InputStream input = stream) {
+            String source = new String(input.readAllBytes(), StandardCharsets.UTF_8);
+            YamlConfiguration yaml = new YamlConfiguration();
+            yaml.loadFromString(source);
+            return yaml;
         } catch (Exception exception) {
             throw new AssertionError("Could not parse " + name, exception);
         }

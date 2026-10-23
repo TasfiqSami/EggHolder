@@ -1525,7 +1525,6 @@ public final class EndWarService implements Listener {
             }
         }
         spawnPlatformSnapshot.clear();
-        startPortalSnapshot.clear();
     }
 
     private void closePluginInventories() {
