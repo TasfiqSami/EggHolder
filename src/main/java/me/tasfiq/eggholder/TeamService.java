@@ -1010,7 +1010,7 @@ public final class TeamService implements Listener {
         if (raw == null) {
             return fallback;
         }
-        Material material = Material.matchMaterial(raw.toUpperCase(Locale.ROOT));
+        Material material = TextUtil.parseCompatibleMaterial(raw);
         return material == null ? fallback : material;
     }
 

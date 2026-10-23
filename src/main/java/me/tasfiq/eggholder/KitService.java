@@ -326,7 +326,7 @@ public final class KitService implements Listener {
         if (rawValue == null) {
             return fallback;
         }
-        Material material = Material.matchMaterial(rawValue.toUpperCase(Locale.ROOT));
+        Material material = TextUtil.parseCompatibleMaterial(rawValue);
         return material == null ? fallback : material;
     }
 
@@ -348,7 +348,7 @@ public final class KitService implements Listener {
     ) {
         private static KitDefinition load(JavaPlugin plugin, String kitId, ConfigurationSection section) {
             String displayName = section.getString("name", "&f" + kitId);
-            Material iconMaterial = Material.matchMaterial(section.getString("icon", "BOOK").toUpperCase(Locale.ROOT));
+            Material iconMaterial = TextUtil.parseCompatibleMaterial(section.getString("icon", "BOOK"));
             if (iconMaterial == null) {
                 iconMaterial = Material.BOOK;
             }
@@ -444,7 +444,7 @@ public final class KitService implements Listener {
             Map<Enchantment, Integer> enchantments
     ) {
         private static KitItem load(JavaPlugin plugin, String key, ConfigurationSection section) {
-            Material material = Material.matchMaterial(section.getString("material", "STONE").toUpperCase(Locale.ROOT));
+            Material material = TextUtil.parseCompatibleMaterial(section.getString("material", "STONE"));
             if (material == null) {
                 material = Material.STONE;
             }

@@ -12,6 +12,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
@@ -122,6 +123,26 @@ public final class TextUtil {
             return null;
         }
         return NamedTextColor.NAMES.value(rawValue.trim().toLowerCase(Locale.ROOT));
+    }
+
+    /**
+     * Resolves a configured material while keeping newer optional gear usable
+     * on older supported Minecraft versions.
+     */
+    public static Material parseCompatibleMaterial(String rawValue) {
+        if (rawValue == null || rawValue.isBlank()) {
+            return null;
+        }
+        String normalized = rawValue.trim().toUpperCase(Locale.ROOT);
+        Material material = Material.matchMaterial(normalized);
+        if (material != null) {
+            return material;
+        }
+        return switch (normalized.replace("MINECRAFT:", "")) {
+            case "NETHERITE_SPEAR" -> Material.TRIDENT;
+            case "MACE" -> Material.NETHERITE_AXE;
+            default -> null;
+        };
     }
 
     private static String translateHexColors(String input) {

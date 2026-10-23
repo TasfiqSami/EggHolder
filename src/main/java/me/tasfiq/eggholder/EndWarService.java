@@ -1907,7 +1907,7 @@ public final class EndWarService implements Listener {
         if (rawValue == null) {
             return fallback;
         }
-        Material material = Material.matchMaterial(rawValue.toUpperCase(Locale.ROOT));
+        Material material = TextUtil.parseCompatibleMaterial(rawValue);
         return material == null ? fallback : material;
     }
 
@@ -2391,7 +2391,7 @@ public final class EndWarService implements Listener {
         }
 
         private static ConfiguredItem fromSection(ConfigurationSection section) {
-            Material material = Material.matchMaterial(section.getString("material", "STONE").toUpperCase(Locale.ROOT));
+            Material material = TextUtil.parseCompatibleMaterial(section.getString("material", "STONE"));
             if (material == null) {
                 material = Material.STONE;
             }

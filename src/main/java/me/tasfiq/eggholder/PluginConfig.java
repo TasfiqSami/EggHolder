@@ -963,7 +963,7 @@ public final class PluginConfig {
             return fallback;
         }
 
-        Material material = Material.matchMaterial(rawValue.toUpperCase(Locale.ROOT));
+        Material material = TextUtil.parseCompatibleMaterial(rawValue);
         if (material != null) {
             return material;
         }

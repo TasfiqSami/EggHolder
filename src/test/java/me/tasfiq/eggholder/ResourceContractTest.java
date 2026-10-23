@@ -3,10 +3,12 @@ package me.tasfiq.eggholder;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.junit.jupiter.api.Test;
 
@@ -47,6 +49,16 @@ class ResourceContractTest {
             assertFalse(kits.getConfigurationSection("kits." + kit + ".items").getKeys(false).isEmpty(),
                     kit + " needs at least one item");
         }
+    }
+
+    @Test
+    void optionalNewGearUsesSensibleOlderVersionFallbacks() {
+        Material spear = TextUtil.parseCompatibleMaterial("NETHERITE_SPEAR");
+        Material mace = TextUtil.parseCompatibleMaterial("MACE");
+
+        assertTrue(spear != null && Set.of("trident", "netherite_spear").contains(spear.getKey().getKey()));
+        assertTrue(mace != null && Set.of("netherite_axe", "mace").contains(mace.getKey().getKey()));
+        assertNull(TextUtil.parseCompatibleMaterial("NOT_A_REAL_MATERIAL"));
     }
 
     private YamlConfiguration load(String name) {
