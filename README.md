@@ -654,7 +654,7 @@ target/EggHolder.jar
 
 ## GitHub Packages (Maven)
 
-The Maven artifact is published to [GitHub Packages](https://github.com/TasfiqSami/EggHolder/packages) for developers who want to consume EggHolder as a Maven dependency. A push runs one workflow: it builds against Paper API 1.20.6 and 1.21.11, then publishes a unique CI package only after both builds pass. Pull requests run both builds but do not publish. CI versions follow the release version in `pom.xml`, for example `2.2.2-ci.42.1`.
+The Maven artifact is published to [GitHub Packages](https://github.com/TasfiqSami/EggHolder/packages) for developers who want to consume EggHolder as a Maven dependency. A push runs one workflow: it builds against Paper API 1.20.6 and 1.21.11, then publishes a unique CI package only after both builds pass. Pull requests run both builds but do not publish. CI versions follow the release version in `pom.xml`, for example `2.2.2-ci.42.1`. To publish a stable Maven version, run **EggHolder CI and Package** from GitHub Actions using **Run workflow** and enter the release version (for example `2.2.2`); leave it blank to publish a unique CI version.
 
 Coordinates for the current release:
 

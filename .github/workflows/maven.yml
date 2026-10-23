@@ -13,6 +13,12 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      package_version:
+        description: "Stable Maven version to publish (for example 2.2.2); leave blank for a unique CI version."
+        required: false
+        type: string
 
 jobs:
   verify:
@@ -34,7 +40,7 @@ jobs:
         run: mvn -B clean -Dpaper.version=${{ matrix.paper-api }} verify --file pom.xml
 
   publish:
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     needs: verify
     runs-on: ubuntu-24.04
     permissions:
@@ -53,7 +59,17 @@ jobs:
       - name: Publish Maven package
         run: |
           BASE_VERSION=$(sed -n 's/.*<revision>\(.*\)<\/revision>.*/\1/p' pom.xml | head -n 1)
-          mvn --batch-mode --no-transfer-progress deploy "-Drevision=${BASE_VERSION}-ci.${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}"
+          if [ -n "$PACKAGE_VERSION" ]; then
+            if [[ ! "$PACKAGE_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-][A-Za-z0-9.-]+)?$ ]]; then
+              echo "Invalid package_version: use a semantic version such as ${BASE_VERSION}."
+              exit 1
+            fi
+            VERSION_TO_PUBLISH="$PACKAGE_VERSION"
+          else
+            VERSION_TO_PUBLISH="${BASE_VERSION}-ci.${GITHUB_RUN_NUMBER}.${GITHUB_RUN_ATTEMPT}"
+          fi
+          mvn --batch-mode --no-transfer-progress deploy "-Drevision=${VERSION_TO_PUBLISH}"
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGE_VERSION: ${{ inputs.package_version }}
