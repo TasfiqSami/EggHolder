@@ -331,8 +331,13 @@ public final class EggHolderService implements Listener {
     }
 
     private void claimEggBlock(Player player, Block eggBlock) {
+        java.util.Map<Integer, ItemStack> leftovers = player.getInventory().addItem(new ItemStack(config.getEggMaterial()));
+        if (!leftovers.isEmpty()) {
+            plugin.getMessageManager().sendPrefixed(player, "egg-pickup-no-space");
+            return;
+        }
+
         eggBlock.setType(Material.AIR, false);
-        player.getInventory().addItem(new ItemStack(config.getEggMaterial()));
         Bukkit.getScheduler().runTask(plugin, () -> syncHolderFromInventory(player));
     }
 
@@ -459,11 +464,6 @@ public final class EggHolderService implements Listener {
         if (deadPlayerService.isDead(player)) {
             return;
         }
-        if (player.getInventory().firstEmpty() == -1) {
-            plugin.getMessageManager().sendPrefixed(player, "egg-pickup-no-space");
-            return;
-        }
-
         claimEggBlock(player, clickedBlock);
     }
 

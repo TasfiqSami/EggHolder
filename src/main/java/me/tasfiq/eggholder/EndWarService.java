@@ -757,9 +757,10 @@ public final class EndWarService implements Listener {
         startTrackingEgg(event.getEntity());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onEggPickup(EntityPickupItemEvent event) {
-        if (!(event.getEntity() instanceof Player player)) {
+        if (!(event.getEntity() instanceof Player player)
+                || plugin.getDeadPlayerService().isDead(player)) {
             return;
         }
         if (trackedEgg == null || !event.getItem().getUniqueId().equals(trackedEgg.itemUuid())) {
@@ -1002,7 +1003,11 @@ public final class EndWarService implements Listener {
         }
 
         DamageContribution contribution = holderDamage.computeIfAbsent(currentHolderId, unused -> new DamageContribution());
-        if (contribution.anchorLocation() == null || contribution.anchorLocation().distanceSquared(holder.getLocation()) > antiCampRadius * antiCampRadius) {
+        Location anchor = contribution.anchorLocation();
+        Location currentLocation = holder.getLocation();
+        if (anchor == null
+                || anchor.getWorld() != currentLocation.getWorld()
+                || anchor.distanceSquared(currentLocation) > antiCampRadius * antiCampRadius) {
             contribution.setAnchor(holder.getLocation());
             contribution.setAnchorStartedAt(now);
             return;

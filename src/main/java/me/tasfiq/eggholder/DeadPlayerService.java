@@ -215,7 +215,9 @@ public final class DeadPlayerService implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
-        if (!config.isDeadStateEnabled()) {
+        if (!config.isDeadStateEnabled()
+                || plugin.getEndWarService() == null
+                || !plugin.getEndWarService().isGameRunning()) {
             return;
         }
 
