@@ -30,12 +30,13 @@ v2.2.2 is built, runtime-checked, pushed, and released. It addresses issues foun
 - Isolated Paper 1.21.11 v2.2.2 startup prepared the bundled map with 10 crystal anchors and no unsupported schematic warning. Bot-driven team workflows and audience controls succeeded. Match start, duplicate start response, stop, and world status succeeded without EggHolder errors.
 - GitHub release asset digest matched local SHA-256 `F3B1925FA09722CA164E642A7D0FEF1D5E25B304CA0619A82A764345C88BF2F3`.
 - GitHub workflow run `40024311294` passed both API matrix builds and the GitHub Packages publish job after the final workflow cleanup. The Modrinth download was re-fetched and SHA-256 verified against the release jar.
+- Added a manual `workflow_dispatch` option to publish a stable Maven package version. Push run `40024828209` passed and published the CI package; manual run `40024982544` passed all three jobs for `me.tasfiq:eggholder:2.2.2`. Maven reported that this stable version was already deployed and skipped overwriting it, confirming the coordinate is present.
 - Modrinth version `2.2.2` ID `KeGPGUrf` uploaded to existing project `jm0TqH0V`; Paper/Purpur metadata for 1.20.6–1.21.11, `EggHolder.jar`, 287,562 bytes. Project review remains processing. Modrinth Modify Project API does not expose `project_type`, so type/route correction is unresolved; do not delete/recreate based on a guess. Seek dashboard/support guidance after review.
 
 ## Next tasks — important
 
 1. Check whether Modrinth approved project `jm0TqH0V`. If still processing, use dashboard/support to request the public plugin classification/route. v2.2.2 is already uploaded; do not duplicate it.
-2. Future code pushes should use the consolidated one-workflow CI/package action; latest run `40022133749` passed all jobs and published Maven package.
+2. GitHub Packages stable coordinate `me.tasfiq:eggholder:2.2.2` is present. Future pushes publish unique `-ci.<run>.<attempt>` versions; use the workflow's manual stable-version input only when intentionally publishing a release version. Latest push package run `40024828209` passed.
 3. Full competitive match balance, death/revive interactions, Paper API 1.20.6 live runtime, Spigot runtime, and Folia are not covered by the localhost Paper 1.21.11 smoke test.
 4. Preserve `%LOCALAPPDATA%\Modrinth\eggholder-token.dpapi`; never put credentials in the repository or Markdown.
 
@@ -67,7 +68,7 @@ Communication preference: execute authorized work instead of repeatedly asking f
 - GitHub repository: `TasfiqSami/EggHolder`.
 - GitHub Releases known before v2.2.0: `v2.1.0` and `v2.0.0`.
 - GitHub Packages Maven coordinates: `me.tasfiq:eggholder`; repository `https://maven.pkg.github.com/TasfiqSami/EggHolder`.
-- `.github/workflows/maven.yml` is the only workflow: tests Paper API 1.20.6 and 1.21.11 using Java 21, then publishes Maven package on push after checks pass. Two matrix build jobs and one dependent publish job are expected inside that single workflow run. Current actions use checkout v7, setup-java v6, Ubuntu 24.04. Run `40024311294` passed all three jobs.
+- `.github/workflows/maven.yml` is the only workflow: tests Paper API 1.20.6 and 1.21.11 using Java 21, then publishes a Maven package after checks pass. Pushes publish unique CI versions; `workflow_dispatch` can publish a requested stable version. Two matrix build jobs and one dependent publish job are expected inside that single workflow run. Current actions use checkout v7, setup-java v6, Ubuntu 24.04. Push run `40024828209` and stable-version run `40024982544` passed all three jobs.
 - CI package version is based on `<revision>` from `pom.xml`, suffixed with `-ci.<run_number>.<attempt>`, using Actions `GITHUB_TOKEN` and `packages: write`. It does not need the Modrinth token.
 - Always inspect `git status`, branch, and current remote before publishing. Check for an already-existing release/tag to avoid duplicates.
 
