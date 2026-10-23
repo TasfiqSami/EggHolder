@@ -646,6 +646,22 @@ Coordinates for the current release:
 
 Repository URL: `https://maven.pkg.github.com/TasfiqSami/EggHolder`.
 
+GitHub Packages requires Maven authentication to download artifacts. Create a GitHub Personal Access Token (classic) with `read:packages`, then add it to your local Maven `~/.m2/settings.xml` (do not commit this file or token):
+
+```xml
+<settings>
+  <servers>
+    <server>
+      <id>github</id>
+      <username>YOUR_GITHUB_USERNAME</username>
+      <password>YOUR_TOKEN</password>
+    </server>
+  </servers>
+</settings>
+```
+
+The server ID must match the repository ID `github`. GitHub's Maven registry requires authentication for package downloads; see [GitHub's Maven registry documentation](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry).
+
 For a Minecraft server installation, download `EggHolder.jar` from GitHub Releases instead.
 
 ## Install On Server
