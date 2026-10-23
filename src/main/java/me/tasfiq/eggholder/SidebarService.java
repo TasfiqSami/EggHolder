@@ -145,10 +145,6 @@ public final class SidebarService implements Listener {
             targetTeam.displayName(sourceTeam.displayName());
             targetTeam.prefix(sourceTeam.prefix());
             targetTeam.suffix(sourceTeam.suffix());
-            net.kyori.adventure.text.format.TextColor teamColor = sourceTeam.color();
-            if (teamColor != null) {
-                targetTeam.color(net.kyori.adventure.text.format.TextColor.color(teamColor.value()));
-            }
             targetTeam.setAllowFriendlyFire(sourceTeam.allowFriendlyFire());
             targetTeam.setCanSeeFriendlyInvisibles(sourceTeam.canSeeFriendlyInvisibles());
             for (Team.Option option : Team.Option.values()) {
