@@ -1,5 +1,5 @@
 name: EggHolder
-version: 2.2.1
+version: 2.2.2
 main: me.tasfiq.eggholder.EggHolderPlugin
 api-version: '1.20.6'
 author: Tasfiq
