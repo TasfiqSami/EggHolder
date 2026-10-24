@@ -31,13 +31,13 @@ This is the continuation note for future Codex sessions. Read **Current status**
 - `TextUtil` now parses legacy `&`/`§` color and style codes, legacy RGB, hex colors, and Adventure MiniMessage tags; `MessageManager` sends rich components so gradients and click/hover tags are preserved. Updated the message prefix and selected event announcements to use gradients. README now documents the supported formats.
 - Follow-up bypass audit: eliminated players are now blocked from entity interaction and attacks attributed through projectiles, fireworks, lingering clouds, primed TNT, and tamed mobs. Entry protection also cancels environmental damage and bucket/fire actions. The center no-build ring now blocks bucket placement, ignition, crystals, spawn eggs, boats/minecarts, and display entities in addition to block placement. No Escape blocks Ender Pearl teleports already in flight and removes nearby holder-fired wind charges at activation.
 - Added the BDEngine catalog model `Airdrop` (model 8073) by Yirf as the supply-drop visual. Its nine display parts are bundled in `src/main/resources/supply-drop-model.yml`, spawned and moved together as individually tracked BlockDisplays, and removed by their UUIDs. The world does not call BDE at runtime. Attribution and the model's BDL BY-NC terms are documented in `README.md`; commercial use needs separate permission from the author. Java 21 `mvn -B clean -DskipTests package` passed on 2026-10-24; tests and live Paper/Leaf rendering were not run.
-- Release candidate v2.2.3 is prepared locally. `git diff --check` passed. `mvn -B clean -DskipTests package` passed using Java 21; tests were skipped. No Paper/Leaf runtime test has been performed. Jar SHA-256: `6ED03605118D91650AB9427D33CCC92716ED90B91BD1807710A5AD606711E960`. GitHub publication has not completed yet.
+- v2.2.3 was released at `https://github.com/TasfiqSami/EggHolder/releases/tag/v2.2.3` with `target/EggHolder.jar`. Jar SHA-256: `6ED03605118D91650AB9427D33CCC92716ED90B91BD1807710A5AD606711E960`; GitHub's uploaded asset digest matches. GitHub Actions run `40126367740` passed both Paper API builds (1.20.6 and 1.21.11) and the GitHub Packages publish job after the repository was made public. Local build used `mvn -B clean -DskipTests package`; tests were skipped, and no Paper/Leaf runtime test has been performed.
 
-## Latest work in progress — v2.2.3
+## Latest completed release — v2.2.3
 
-v2.2.3 release candidate includes the locally bundled BDEngine airdrop model. The GitHub release/tag and Maven stable package still need publication.
+v2.2.3 adds the locally bundled BDEngine Airdrop model. Release asset is available at the release URL above. The push workflow published a unique CI Maven package; the stable Maven coordinate `me.tasfiq:eggholder:2.2.3` has not been explicitly published.
 
-## Latest completed release — v2.2.2
+## Previous completed release — v2.2.2
 
 v2.2.2 is built, runtime-checked, pushed, and released. It addresses issues found by launching a real Paper 1.21.11 server:
 
@@ -59,7 +59,7 @@ v2.2.2 is built, runtime-checked, pushed, and released. It addresses issues foun
 3. Local commit `aaf3741` adds startup/reload config validation and `/endwar status`; follow-up docs are in `8ee7c33`. The Java 21 `mvn -B -DskipTests package` build passed; automated tests and live runtime checks for these additions have not been run. Review and test these changes before releasing them.
 4. Full competitive match balance, death/revive interactions, Paper API 1.20.6 live runtime, Spigot runtime, and Folia are not covered by the localhost Paper 1.21.11 smoke test.
 5. Preserve `%LOCALAPPDATA%\Modrinth\eggholder-token.dpapi`; never put credentials in the repository or Markdown.
-6. Before releasing the 2026-10-24 fixes, run a Paper/Leaf 1.21.11 runtime pass for End Storm/hotspot particles and chat, supply drop landing/opening at map edges, crystal objective enable/disable/capture, and all `/endwar feature` toggles. Java 21 package compilation already passed locally; automated tests were skipped.
+6. Run a Paper/Leaf 1.21.11 runtime pass for End Storm/hotspot particles and chat, supply drop landing/opening at map edges, crystal objective enable/disable/capture, feature toggles, and the new Airdrop display alignment/cleanup. CI passed the API builds, but no live server check was done.
 
 ## User goals and usual requests
 
