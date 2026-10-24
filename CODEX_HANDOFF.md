@@ -53,7 +53,7 @@ v2.2.2 is built, runtime-checked, pushed, and released. It addresses issues foun
 3. Local commit `aaf3741` adds startup/reload config validation and `/endwar status`; follow-up docs are in `8ee7c33`. The Java 21 `mvn -B -DskipTests package` build passed; automated tests and live runtime checks for these additions have not been run. Review and test these changes before releasing them.
 4. Full competitive match balance, death/revive interactions, Paper API 1.20.6 live runtime, Spigot runtime, and Folia are not covered by the localhost Paper 1.21.11 smoke test.
 5. Preserve `%LOCALAPPDATA%\Modrinth\eggholder-token.dpapi`; never put credentials in the repository or Markdown.
-6. Before releasing the 2026-10-24 fixes, build with Java 21 and reproduce the Leaf 1.21.11 End Storm/hotspot flow, supply drop landing/opening/cleanup, crystal objective enable/disable/capture, and review all `/endwar feature` toggles.
+6. Before releasing the 2026-10-24 fixes, run a Paper/Leaf 1.21.11 runtime pass for End Storm/hotspot particles and chat, supply drop landing/opening at map edges, crystal objective enable/disable/capture, and all `/endwar feature` toggles. Java 21 package compilation already passed locally; automated tests were skipped.
 
 ## User goals and usual requests
 

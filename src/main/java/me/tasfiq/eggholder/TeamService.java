@@ -574,7 +574,7 @@ public final class TeamService implements Listener {
     }
 
     private Inventory createInvitePlayersMenu(Player viewer) {
-        List<Player> targets = Bukkit.getOnlinePlayers().stream()
+        List<? extends Player> targets = Bukkit.getOnlinePlayers().stream()
                 .filter(target -> !target.equals(viewer) && !playerTeams.containsKey(target.getUniqueId()))
                 .toList();
         Inventory inventory = Bukkit.createInventory(new TeamMenuHolder(viewer.getUniqueId(), TeamMenuPage.INVITE_PLAYERS), GuiStyle.sizeForContent(targets.size()), TextUtil.component("<gradient:#8B5CF6:#22D3EE><bold>INVITE PLAYERS</bold></gradient>"));
