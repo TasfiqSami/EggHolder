@@ -109,14 +109,19 @@ public final class KitService implements Listener {
     }
 
     public void openMenu(Player player) {
-        int size = Math.max(9, ((Math.max(1, kits.size()) - 1) / 9 + 1) * 9);
-        Inventory inventory = Bukkit.createInventory(new KitMenuHolder(player.getUniqueId()), Math.min(size, 54), TextUtil.component("&8Hunter Kits"));
-        int slot = 0;
+        Inventory inventory = Bukkit.createInventory(new KitMenuHolder(player.getUniqueId()), GuiStyle.sizeForContent(kits.size()), TextUtil.component("<gradient:#A855F7:#38BDF8><bold>HUNTER LOADOUTS</bold></gradient>"));
+        GuiStyle.frame(inventory);
+        inventory.setItem(4, GuiStyle.info(Material.NETHER_STAR, "<gradient:#C084FC:#67E8F9><bold>Choose your loadout</bold></gradient>", List.of("<gray>Pick a role that fits your playstyle.", "<dark_gray>Your selection applies when the match begins.")));
+        List<Integer> slots = GuiStyle.contentSlots(inventory);
+        int index = 0;
         for (KitDefinition kit : kits.values()) {
-            if (slot >= inventory.getSize()) {
+            if (index >= slots.size()) {
                 break;
             }
-            inventory.setItem(slot++, kit.toDisplayItem(kitMenuActionKey));
+            inventory.setItem(slots.get(index++), kit.toDisplayItem(kitMenuActionKey, kit.id().equals(getSelectedKitId(player))));
+        }
+        if (kits.isEmpty()) {
+            inventory.setItem(13, GuiStyle.info(Material.BARRIER, "<red>No loadouts available", List.of("<gray>Ask an admin to configure kits.")));
         }
         player.openInventory(inventory);
     }
@@ -397,11 +402,14 @@ public final class KitService implements Listener {
             );
         }
 
-        private ItemStack toDisplayItem(NamespacedKey actionKey) {
+        private ItemStack toDisplayItem(NamespacedKey actionKey, boolean selected) {
             ItemStack stack = new ItemStack(iconMaterial);
             ItemMeta meta = stack.getItemMeta();
             if (meta != null) {
-                TextUtil.applyItemText(meta, displayName, description);
+                List<String> lore = new ArrayList<>(description);
+                lore.add("");
+                lore.add(selected ? "<green><bold>✓ CURRENT SELECTION</bold></green>" : "<yellow>Click to select this loadout</yellow>");
+                TextUtil.applyItemText(meta, displayName, lore);
                 meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                 meta.getPersistentDataContainer().set(actionKey, PersistentDataType.STRING, "kit:select:" + id);
                 stack.setItemMeta(meta);

@@ -163,7 +163,7 @@ dead-state:
     name: "&b&lTeleporter"
     lore:
       - "&7Right-click to open the alive player menu."
-    menu-title: "&8Alive Players"
+    menu-title: "<gradient:#7C3AED:#22D3EE><bold>LIVE PLAYERS</bold></gradient>"
     head-name-format: "&a%player%"
     head-lore:
       - "&7World: &f%world%"

@@ -190,21 +190,21 @@ public final class DeadPlayerService implements Listener {
             }
         }
 
-        int size = Math.max(9, ((targets.size() - 1) / 9 + 1) * 9);
-        size = Math.min(size, 54);
+        int size = GuiStyle.sizeForContent(targets.size());
 
         Inventory inventory = Bukkit.createInventory(
                 new TeleportMenuHolder(viewer.getUniqueId()),
                 size,
                 TextUtil.component(config.formatTeleporterMenuTitle())
         );
+        GuiStyle.frame(inventory);
 
-        int slot = 0;
-        for (Player target : targets) {
-            if (slot >= inventory.getSize()) {
-                break;
-            }
-            inventory.setItem(slot++, createTeleportTargetItem(target));
+        List<Integer> slots = GuiStyle.contentSlots(inventory);
+        for (int index = 0; index < Math.min(targets.size(), slots.size()); index++) {
+            inventory.setItem(slots.get(index), createTeleportTargetItem(targets.get(index)));
+        }
+        if (targets.isEmpty()) {
+            inventory.setItem(13, GuiStyle.info(Material.ENDER_EYE, "<gray>No one to follow", List.of("<dark_gray>Living players will appear here.")));
         }
 
         return inventory;

@@ -3,7 +3,6 @@ package me.tasfiq.eggholder;
 import java.util.Collections;
 import java.util.UUID;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.EventHandler;
@@ -47,21 +46,14 @@ public final class TeleportMenuListener implements Listener {
 
         event.setCancelled(true);
 
-        Inventory menu = deadPlayerService.createTeleporterMenu(player);
-        boolean hasTargets = false;
-        for (ItemStack stack : menu.getContents()) {
-            if (stack != null && stack.getType() != Material.AIR) {
-                hasTargets = true;
-                break;
-            }
-        }
-
+        boolean hasTargets = deadPlayerService.getAliveOnlinePlayers().stream()
+                .anyMatch(target -> !target.getUniqueId().equals(player.getUniqueId()));
         if (!hasTargets) {
             plugin.getMessageManager().sendPrefixed(player, "teleporter-no-targets");
             return;
         }
 
-        player.openInventory(menu);
+        player.openInventory(deadPlayerService.createTeleporterMenu(player));
     }
 
     @EventHandler

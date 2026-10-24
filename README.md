@@ -549,6 +549,10 @@ Opens the GUI team menu.
 
 This plugin is intentionally very editable.
 
+### Text colors and formatting
+
+Text in `messages.yml`, `config.yml`, `kits.yml`, and `scoreboard.yml` accepts legacy `&` color/style codes, section-sign codes, `&#RRGGBB` and `#RRGGBB` hex colors, and extended legacy RGB codes such as `&x&F&F&0&0&A&A`. Adventure MiniMessage tags are also supported, including named colors, `<#RRGGBB>`, gradients such as `<gradient:#8B5CF6:#22D3EE>text</gradient>`, bold, italic, underline, strikethrough, obfuscation, reset, and standard click/hover tags in component-rendered text. Placeholders such as `%player%` remain supported.
+
 ### `config.yml`
 
 Main gameplay configuration.

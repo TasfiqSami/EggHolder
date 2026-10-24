@@ -518,12 +518,14 @@ public final class TeamService implements Listener {
 
     private Inventory createMainMenu(Player viewer) {
         EndWarTeam team = getTeam(viewer);
-        Inventory inventory = Bukkit.createInventory(new TeamMenuHolder(viewer.getUniqueId(), TeamMenuPage.MAIN), 27, TextUtil.component("&8Team Menu"));
+        Inventory inventory = Bukkit.createInventory(new TeamMenuHolder(viewer.getUniqueId(), TeamMenuPage.MAIN), 27, TextUtil.component("<gradient:#8B5CF6:#22D3EE><bold>TEAM LOBBY</bold></gradient>"));
+        GuiStyle.frame(inventory);
+        inventory.setItem(4, createActionItem(Material.NETHER_STAR, "<gradient:#A78BFA:#67E8F9><bold>Team Hub</bold></gradient>", List.of("<gray>Build your squad before the match.", "<dark_gray>──────────────", team == null ? "<yellow>No team selected" : "<gray>Team: <white>" + team.name()), "team:none"));
 
         if (team == null) {
-            inventory.setItem(11, createActionItem(Material.LIME_WOOL, "&a&lCreate Team", List.of("&7Create a team instantly.", "&7A unique team name is generated automatically."), "team:create"));
-            inventory.setItem(13, createActionItem(Material.PLAYER_HEAD, "&b&lInvites", List.of("&7View incoming team invites."), "team:invites"));
-            inventory.setItem(15, createActionItem(Material.BOOK, "&e&lInfo", List.of("&7Use /team create [name]", "&7or click create to make one now.", "&7Team leaders can rename later with", "&f/team rename <name>"), "team:none"));
+            inventory.setItem(11, createActionItem(Material.LIME_WOOL, "<green><bold>Create Team</bold></green>", List.of("<gray>Create a team instantly.", "<gray>A unique name is generated for you."), "team:create"));
+            inventory.setItem(13, createActionItem(Material.PLAYER_HEAD, "<aqua><bold>Invitations</bold></aqua>", List.of("<gray>Review and accept team invitations."), "team:invites"));
+            inventory.setItem(15, createActionItem(Material.BOOK, "<yellow><bold>How teams work</bold></yellow>", List.of("<gray>Use <white>/team create [name]</white> to choose a name.", "<gray>Leaders can rename with <white>/team rename <name>"), "team:none"));
             return inventory;
         }
 
@@ -541,11 +543,13 @@ public final class TeamService implements Listener {
     }
 
     private Inventory createInvitesMenu(Player viewer) {
-        Inventory inventory = Bukkit.createInventory(new TeamMenuHolder(viewer.getUniqueId(), TeamMenuPage.INVITES), 27, TextUtil.component("&8Team Invites"));
+        Inventory inventory = Bukkit.createInventory(new TeamMenuHolder(viewer.getUniqueId(), TeamMenuPage.INVITES), 54, TextUtil.component("<gradient:#8B5CF6:#22D3EE><bold>TEAM INVITATIONS</bold></gradient>"));
+        GuiStyle.frame(inventory);
         Set<UUID> invites = pendingInvites.getOrDefault(viewer.getUniqueId(), Collections.emptySet());
-        int slot = 0;
+        List<Integer> slots = GuiStyle.contentSlots(inventory);
+        int slotIndex = 0;
         for (UUID teamId : invites) {
-            if (slot >= inventory.getSize()) {
+            if (slotIndex >= slots.size()) {
                 break;
             }
             EndWarTeam team = teams.get(teamId);
@@ -555,31 +559,39 @@ public final class TeamService implements Listener {
 
             Player leader = Bukkit.getPlayer(team.leader());
             String leaderName = leader != null ? leader.getName() : "Unknown";
-            inventory.setItem(slot++, createHeadAction(
+            inventory.setItem(slots.get(slotIndex++), createHeadAction(
                     leader,
-                    "&a&lJoin " + team.name(),
-                    List.of("&7Leader: &f" + leaderName, "&7Members: &f" + team.members().size() + "/" + maxTeamSize, "&eClick to accept."),
+                    "<green><bold>Join " + team.name() + "</bold></green>",
+                    List.of("<gray>Leader: <white>" + leaderName, "<gray>Players: <white>" + team.members().size() + "/" + maxTeamSize, "", "<yellow>Click to accept"),
                     "team:accept:" + team.id()
             ));
         }
-        inventory.setItem(26, createActionItem(Material.ARROW, "&7Back", List.of("&7Return to the main team menu."), "team:back"));
+        if (slotIndex == 0) {
+            inventory.setItem(22, createActionItem(Material.PAPER, "<gray>No invitations", List.of("<dark_gray>New team invites will appear here."), "team:none"));
+        }
+        inventory.setItem(49, createActionItem(Material.ARROW, "<aqua>Back", List.of("<gray>Return to the team hub."), "team:back"));
         return inventory;
     }
 
     private Inventory createInvitePlayersMenu(Player viewer) {
-        Inventory inventory = Bukkit.createInventory(new TeamMenuHolder(viewer.getUniqueId(), TeamMenuPage.INVITE_PLAYERS), 54, TextUtil.component("&8Invite Players"));
-        int slot = 0;
-        for (Player target : Bukkit.getOnlinePlayers()) {
-            if (slot >= inventory.getSize() - 1 || target.equals(viewer) || playerTeams.containsKey(target.getUniqueId())) {
-                continue;
-            }
-            inventory.setItem(slot++, createHeadAction(
+        List<Player> targets = Bukkit.getOnlinePlayers().stream()
+                .filter(target -> !target.equals(viewer) && !playerTeams.containsKey(target.getUniqueId()))
+                .toList();
+        Inventory inventory = Bukkit.createInventory(new TeamMenuHolder(viewer.getUniqueId(), TeamMenuPage.INVITE_PLAYERS), GuiStyle.sizeForContent(targets.size()), TextUtil.component("<gradient:#8B5CF6:#22D3EE><bold>INVITE PLAYERS</bold></gradient>"));
+        GuiStyle.frame(inventory);
+        List<Integer> slots = GuiStyle.contentSlots(inventory);
+        for (int index = 0; index < Math.min(targets.size(), slots.size()); index++) {
+            Player target = targets.get(index);
+            inventory.setItem(slots.get(index), createHeadAction(
                     target,
-                    "&dInvite " + target.getName(),
-                    List.of("&7Click to invite this player."), "team:invite:" + target.getUniqueId()
+                    "<light_purple><bold>Invite " + target.getName() + "</bold></light_purple>",
+                    List.of("<gray>Add this player to your squad.", "", "<yellow>Click to send an invite"), "team:invite:" + target.getUniqueId()
             ));
         }
-        inventory.setItem(53, createActionItem(Material.ARROW, "&7Back", List.of("&7Return to the main team menu."), "team:back"));
+        if (targets.isEmpty()) {
+            inventory.setItem(13, createActionItem(Material.PAPER, "<gray>No players available", List.of("<dark_gray>Everyone online is already in a team."), "team:none"));
+        }
+        inventory.setItem(inventory.getSize() - 5, createActionItem(Material.ARROW, "<aqua>Back", List.of("<gray>Return to the team hub."), "team:back"));
         return inventory;
     }
 

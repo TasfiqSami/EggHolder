@@ -43,12 +43,7 @@ public final class MessageManager {
     }
 
     public String get(String path, Map<String, String> placeholders) {
-        String raw = messages.getString(path);
-        if (raw == null) {
-            raw = "&cMissing message: " + path;
-        }
-
-        return TextUtil.colorize(TextUtil.replacePlaceholders(raw, placeholders));
+        return TextUtil.colorize(TextUtil.replacePlaceholders(raw(path), placeholders));
     }
 
     public String getPrefixed(String path, Map<String, String> placeholders) {
@@ -56,11 +51,14 @@ public final class MessageManager {
     }
 
     public net.kyori.adventure.text.Component getComponent(String path, Map<String, String> placeholders) {
-        return TextUtil.component(get(path, placeholders));
+        return TextUtil.component(TextUtil.replacePlaceholders(raw(path), placeholders));
     }
 
     public net.kyori.adventure.text.Component getPrefixedComponent(String path, Map<String, String> placeholders) {
-        return TextUtil.component(getPrefixed(path, placeholders));
+        String prefix = raw("prefix");
+        String message = raw(path);
+        return TextUtil.component(TextUtil.replacePlaceholders(prefix, placeholders)
+                + TextUtil.replacePlaceholders(message, placeholders));
     }
 
     public void sendPrefixed(CommandSender sender, String path) {
@@ -129,5 +127,10 @@ public final class MessageManager {
         for (Player player : Bukkit.getOnlinePlayers()) {
             sendTitle(player, titlePath, subtitlePath, placeholders, fadeIn, stay, fadeOut);
         }
+    }
+
+    private String raw(String path) {
+        String raw = messages.getString(path);
+        return raw == null ? "&cMissing message: " + path : raw;
     }
 }

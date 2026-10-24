@@ -456,7 +456,9 @@ public final class EndWarService implements Listener {
             return true;
         }
 
-        triggerAudienceEffect(winningEffect);
+        if (!triggerAudienceEffect(winningEffect)) {
+            plugin.getMessageManager().broadcastPrefixed("audience-effect-failed", Map.of("%effect%", winningEffect.displayName()));
+        }
         return true;
     }
 
@@ -1348,11 +1350,12 @@ public final class EndWarService implements Listener {
             return false;
         }
 
-        ThreadLocalRandom random = ThreadLocalRandom.current();
-        double angle = random.nextDouble(0.0D, Math.PI * 2.0D);
-        double distance = random.nextDouble(Math.max(18.0D, centerNoBuildRadius + 8.0D), teamScatterRadius + 30.0D);
-        Location dropCenter = endCenter.clone().add(Math.cos(angle) * distance, 0.0D, Math.sin(angle) * distance);
-        Location ground = findGround(dropCenter.clone());
+        Location ground = chooseSupplyDropGround();
+        if (ground == null) {
+            plugin.getLogger().warning("Supply drop skipped because no safe landing point was found inside the End event map.");
+            plugin.getMessageManager().broadcastPrefixed("supply-drop-no-safe-location", Map.of());
+            return false;
+        }
         Location spawnLocation = ground.clone().add(0.0D, supplyDropSpawnHeight, 0.0D);
 
         BlockDisplay display = endWorld.spawn(spawnLocation.clone().add(0.0D, -0.2D, 0.0D), BlockDisplay.class, blockDisplay -> {
@@ -1381,6 +1384,64 @@ public final class EndWarService implements Listener {
                 )
         );
         return true;
+    }
+
+    private Location chooseSupplyDropGround() {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        ManagedEndWorldService managedEnd = plugin.getManagedEndWorldService();
+        ManagedEndWorldService.MapBounds bounds = managedEnd == null ? null : managedEnd.getPreparedMapBounds();
+
+        if (bounds != null) {
+            int insetX = Math.min(8, Math.max(0, (bounds.maxX() - bounds.minX()) / 4));
+            int insetZ = Math.min(8, Math.max(0, (bounds.maxZ() - bounds.minZ()) / 4));
+            int minX = bounds.minX() + insetX;
+            int maxX = bounds.maxX() - insetX;
+            int minZ = bounds.minZ() + insetZ;
+            int maxZ = bounds.maxZ() - insetZ;
+            if (maxX < minX || maxZ < minZ) {
+                return null;
+            }
+
+            for (int attempt = 0; attempt < 128; attempt++) {
+                int x = random.nextInt(minX, maxX + 1);
+                int z = random.nextInt(minZ, maxZ + 1);
+                Location ground = findGround(new Location(endWorld, x + 0.5D, endCenter.getY(), z + 0.5D));
+                if (isSafeSupplyLanding(ground)
+                        && x >= bounds.minX() && x <= bounds.maxX()
+                        && z >= bounds.minZ() && z <= bounds.maxZ()) {
+                    return ground;
+                }
+            }
+            return null;
+        }
+
+        double borderRadius = Math.max(0.0D, endWorld.getWorldBorder().getSize() / 2.0D - 8.0D);
+        double maxRadius = Math.min(teamScatterRadius, borderRadius);
+        double minRadius = Math.min(maxRadius, Math.max(18.0D, centerNoBuildRadius + 8.0D));
+        for (int attempt = 0; attempt < 80; attempt++) {
+            double angle = random.nextDouble(0.0D, Math.PI * 2.0D);
+            double distance = maxRadius <= minRadius
+                    ? maxRadius
+                    : random.nextDouble(minRadius, maxRadius);
+            Location candidate = endCenter.clone().add(Math.cos(angle) * distance, 0.0D, Math.sin(angle) * distance);
+            Location ground = findGround(candidate);
+            if (isSafeSupplyLanding(ground)) {
+                return ground;
+            }
+        }
+        return null;
+    }
+
+    private boolean isSafeSupplyLanding(Location ground) {
+        if (ground == null || ground.getWorld() == null || !isEndWorld(ground.getWorld())) {
+            return false;
+        }
+        if (!endWorld.getWorldBorder().isInside(ground)) {
+            return false;
+        }
+        Block floor = ground.clone().subtract(0.0D, 1.0D, 0.0D).getBlock();
+        Block landing = ground.getBlock();
+        return floor.getType().isSolid() && !floor.isLiquid() && landing.isPassable() && !landing.isLiquid();
     }
 
     private void updateFallingSupplyDrop(SupplyDrop drop) {
@@ -1487,14 +1548,17 @@ public final class EndWarService implements Listener {
 
     private void fillSupplyDropInventory(Inventory inventory) {
         inventory.clear();
+        GuiStyle.frame(inventory);
+        inventory.setItem(4, GuiStyle.info(Material.NETHER_STAR, "<gradient:#A855F7:#38BDF8><bold>SUPPLY CACHE</bold></gradient>", List.of("<gray>Take what your team needs.", "<dark_gray>Items are shared with everyone.")));
         List<ConfiguredItem> items = new ArrayList<>(supplyDropLoot);
         Collections.shuffle(items);
+        List<Integer> slots = GuiStyle.contentSlots(inventory);
         int slot = 0;
         for (ConfiguredItem item : items) {
-            if (slot >= inventory.getSize()) {
+            if (slot >= slots.size()) {
                 break;
             }
-            inventory.setItem(slot++, item.createStack());
+            inventory.setItem(slots.get(slot++), item.createStack());
         }
     }
 
@@ -1740,7 +1804,9 @@ public final class EndWarService implements Listener {
     }
 
     private Inventory createAudienceMenu(Player viewer) {
-        Inventory inventory = Bukkit.createInventory(new AudienceMenuHolder(viewer.getUniqueId()), 27, TextUtil.component("&8Audience Tools"));
+        Inventory inventory = Bukkit.createInventory(new AudienceMenuHolder(viewer.getUniqueId()), 27, TextUtil.component("<gradient:#F59E0B:#EC4899><bold>AUDIENCE VOTE</bold></gradient>"));
+        GuiStyle.frame(inventory);
+        inventory.setItem(4, GuiStyle.info(Material.ECHO_SHARD, "<gradient:#FCD34D:#FB7185><bold>Change the match</bold></gradient>", List.of("<gray>Choose one event twist.", "<dark_gray>Your vote is private until the result.")));
         int slot = 10;
         for (AudienceEffect effect : AudienceEffect.values()) {
             if (slot > 16) {
@@ -1763,21 +1829,33 @@ public final class EndWarService implements Listener {
         return stack;
     }
 
-    private void triggerAudienceEffect(AudienceEffect effect) {
-        switch (effect) {
+    private boolean triggerAudienceEffect(AudienceEffect effect) {
+        boolean triggered = switch (effect) {
             case STORM_BURST -> triggerEndStorm(true);
             case SUPPLY_DROP -> triggerSupplyDrop(true);
             case HOTSPOT_ROTATION -> rotateHotspot(true);
-            case HOLDER_REVEAL -> announceChatAndTitle("audience-holder-reveal", "audience-holder-reveal-title", "audience-holder-reveal-subtitle", Map.of("%player%", plugin.getEggHolderService().getCurrentHolderName() == null ? "None" : plugin.getEggHolderService().getCurrentHolderName()));
+            case HOLDER_REVEAL -> {
+                String holderName = plugin.getEggHolderService().getCurrentHolderName();
+                if (holderName == null) {
+                    yield false;
+                }
+                announceChatAndTitle("audience-holder-reveal", "audience-holder-reveal-title", "audience-holder-reveal-subtitle", Map.of("%player%", holderName));
+                yield true;
+            }
             case TEAM_HEAL -> {
                 Player holder = plugin.getEggHolderService().getCurrentHolderPlayer();
                 if (holder != null) {
                     applyPotionEffects(holder, audienceHealEffects);
+                    yield true;
                 }
+                yield false;
             }
-        }
+        };
 
-        plugin.getMessageManager().broadcastPrefixed("audience-effect-triggered", Map.of("%effect%", effect.displayName()));
+        if (triggered) {
+            plugin.getMessageManager().broadcastPrefixed("audience-effect-triggered", Map.of("%effect%", effect.displayName()));
+        }
+        return triggered;
     }
 
     private void applyPotionEffects(Player player, List<ConfiguredPotionEffect> effects) {
@@ -1902,6 +1980,21 @@ public final class EndWarService implements Listener {
         switch (feature) {
             case HOTSPOT_ROTATION -> hotspot = null;
             case END_CRYSTAL_OBJECTIVES -> clearCrystalObjectives();
+            case OVERTIME_WIN_CONDITION -> {
+                overtimeTriggered = false;
+                if (matchState == MatchState.OVERTIME) {
+                    matchState = MatchState.RUNNING;
+                }
+            }
+            case MERCILESS_ENDGAME -> {
+                mercylessTriggered = false;
+                if (matchState == MatchState.MERCILESS) {
+                    matchState = isFeatureEnabled(Feature.OVERTIME_WIN_CONDITION) && overtimeTriggered
+                            ? MatchState.OVERTIME : MatchState.RUNNING;
+                }
+            }
+            case NO_ESCAPE_TIMER -> noEscapeTriggered = false;
+            case PANIC_PHASE -> panicPhaseTriggered = false;
             case AUDIENCE_TOOLS -> {
                 closeAudienceVote(false);
                 for (Player player : Bukkit.getOnlinePlayers()) {

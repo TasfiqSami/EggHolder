@@ -23,8 +23,7 @@ import org.bukkit.potion.PotionEffectType;
 
 public final class TextUtil {
 
-    private static final Pattern HEX_PATTERN = Pattern.compile("(?i)(?<!<)&?#([0-9a-f]{6})");
-    private static final Pattern LEGACY_COLOR_PATTERN = Pattern.compile("(?i)&([0-9A-FK-OR])");
+    private static final Pattern HEX_PATTERN = Pattern.compile("(?i)(?<![<:])&?#([0-9a-f]{6})");
     private static final Pattern LEGACY_HEX_PATTERN = Pattern.compile("(?i)[&§]x(?:[&§][0-9a-f]){6}");
     private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.legacySection();
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
@@ -148,16 +147,6 @@ public final class TextUtil {
         };
     }
 
-    private static String translateHexColors(String input) {
-        Matcher matcher = HEX_PATTERN.matcher(input);
-        StringBuffer buffer = new StringBuffer();
-        while (matcher.find()) {
-            matcher.appendReplacement(buffer, toMinecraftHex(matcher.group(1)));
-        }
-        matcher.appendTail(buffer);
-        return buffer.toString();
-    }
-
     private static String legacyToMiniMessage(String input) {
         Matcher extendedHex = LEGACY_HEX_PATTERN.matcher(input);
         StringBuffer extendedBuffer = new StringBuffer();
@@ -205,24 +194,6 @@ public final class TextUtil {
         }
         legacy.appendTail(output);
         return output.toString();
-    }
-
-    private static String toMinecraftHex(String hexValue) {
-        StringBuilder builder = new StringBuilder("§x");
-        for (char character : hexValue.toCharArray()) {
-            builder.append('§').append(character);
-        }
-        return builder.toString();
-    }
-
-    private static String translateLegacyCodes(String input) {
-        Matcher matcher = LEGACY_COLOR_PATTERN.matcher(input);
-        StringBuffer buffer = new StringBuffer();
-        while (matcher.find()) {
-            matcher.appendReplacement(buffer, "§" + matcher.group(1));
-        }
-        matcher.appendTail(buffer);
-        return buffer.toString();
     }
 
     private static NamespacedKey parseNamespacedKey(String rawValue) {
