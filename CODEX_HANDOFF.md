@@ -18,6 +18,15 @@ This is the continuation note for future Codex sessions. Read **Current status**
 - The same server smoke test confirmed managed End startup and 10 crystal anchors, `/eggholder reload`, `/endwar world status`, feature on/off and invalid-feature handling, EggHolder add/remove invalid-target handling, revive invalid-target handling, audience open/close/resolve, and interactive team create/invite/accept/rename/kick/disband/leave/menu flows.
 - Two local offline-mode Mineflayer bots connected to an isolated localhost Paper server for command/GUI checks. `/endwar start`, duplicate start rejection, `/endwar stop`, and managed-world status succeeded after the fix. Latest Paper log had zero EggHolder warnings/errors, command exceptions, or failed event handlers. This is not a full match or combat-balance test.
 
+## New local fixes in progress (2026-10-24)
+
+- User reported repeated Task #10/#11 warnings on Leaf 1.21.11, repeated End Storm chat, unwanted Levitation, glitchy supply drops, an outdated scoreboard, and crystal/feature issues.
+- Fixed `DRAGON_BREATH` particle calls to pass the required `Float` data. The old End Storm applied Levitation; that effect is removed. The repeated particle exception in the storm task could interrupt its timer update and re-trigger its chat announcement every tick.
+- Supply drops now move a single BlockDisplay directly rather than mounting it on an invisible Chicken. Existing loot GUI/landing behavior remains.
+- Crystal objective spawning now removes a nearby leftover EnderCrystal at each objective anchor before spawning its objective crystal. Disabling the feature now removes its tracked objective crystals.
+- Updated the default sidebar presentation in `scoreboard.yml`.
+- These changes are uncommitted and not released. `git diff --check` passed. A `mvn -B -DskipTests package` compile was attempted but this workspace currently runs Java 17, while the project requires Java 21 (`release version 21 not supported`). No Paper/Leaf runtime test has been performed. Further reports are needed to diagnose any remaining feature-specific or crystal behavior.
+
 ## Latest work in progress — v2.2.2
 
 v2.2.2 is built, runtime-checked, pushed, and released. It addresses issues found by launching a real Paper 1.21.11 server:
@@ -40,6 +49,7 @@ v2.2.2 is built, runtime-checked, pushed, and released. It addresses issues foun
 3. Local commit `aaf3741` adds startup/reload config validation and `/endwar status`; follow-up docs are in `8ee7c33`. The Java 21 `mvn -B -DskipTests package` build passed; automated tests and live runtime checks for these additions have not been run. Review and test these changes before releasing them.
 4. Full competitive match balance, death/revive interactions, Paper API 1.20.6 live runtime, Spigot runtime, and Folia are not covered by the localhost Paper 1.21.11 smoke test.
 5. Preserve `%LOCALAPPDATA%\Modrinth\eggholder-token.dpapi`; never put credentials in the repository or Markdown.
+6. Before releasing the 2026-10-24 fixes, build with Java 21 and reproduce the Leaf 1.21.11 End Storm/hotspot flow, supply drop landing/opening/cleanup, crystal objective enable/disable/capture, and review all `/endwar feature` toggles.
 
 ## User goals and usual requests
 

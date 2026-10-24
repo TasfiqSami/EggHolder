@@ -68,7 +68,7 @@ public final class MessageManager {
     }
 
     public void sendPrefixed(CommandSender sender, String path, Map<String, String> placeholders) {
-        sender.sendMessage(getPrefixed(path, placeholders));
+        sender.sendMessage(getPrefixedComponent(path, placeholders));
     }
 
     public void broadcastPrefixed(String path, Map<String, String> placeholders) {

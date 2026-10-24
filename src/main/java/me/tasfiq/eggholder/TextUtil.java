@@ -10,6 +10,7 @@ import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
@@ -22,9 +23,11 @@ import org.bukkit.potion.PotionEffectType;
 
 public final class TextUtil {
 
-    private static final Pattern HEX_PATTERN = Pattern.compile("(?i)&?#([0-9a-f]{6})");
+    private static final Pattern HEX_PATTERN = Pattern.compile("(?i)(?<!<)&?#([0-9a-f]{6})");
     private static final Pattern LEGACY_COLOR_PATTERN = Pattern.compile("(?i)&([0-9A-FK-OR])");
+    private static final Pattern LEGACY_HEX_PATTERN = Pattern.compile("(?i)[&§]x(?:[&§][0-9a-f]){6}");
     private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.legacySection();
+    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
     private TextUtil() {
     }
@@ -34,7 +37,7 @@ public final class TextUtil {
             return "";
         }
 
-        return translateLegacyCodes(translateHexColors(input));
+        return legacy(MINI_MESSAGE.deserialize(legacyToMiniMessage(input)));
     }
 
     public static String replacePlaceholders(String input, Map<String, String> placeholders) {
@@ -63,7 +66,7 @@ public final class TextUtil {
     }
 
     public static Component component(String input) {
-        return LEGACY_SERIALIZER.deserialize(colorize(input));
+        return MINI_MESSAGE.deserialize(legacyToMiniMessage(input == null ? "" : input));
     }
 
     public static List<Component> componentList(List<String> input) {
@@ -153,6 +156,55 @@ public final class TextUtil {
         }
         matcher.appendTail(buffer);
         return buffer.toString();
+    }
+
+    private static String legacyToMiniMessage(String input) {
+        Matcher extendedHex = LEGACY_HEX_PATTERN.matcher(input);
+        StringBuffer extendedBuffer = new StringBuffer();
+        while (extendedHex.find()) {
+            String hexValue = extendedHex.group().replaceAll("(?i)[^0-9a-f]", "");
+            extendedHex.appendReplacement(extendedBuffer, "&#" + hexValue);
+        }
+        extendedHex.appendTail(extendedBuffer);
+
+        Matcher hex = HEX_PATTERN.matcher(extendedBuffer.toString());
+        StringBuffer hexBuffer = new StringBuffer();
+        while (hex.find()) {
+            hex.appendReplacement(hexBuffer, "<#" + hex.group(1) + ">");
+        }
+        hex.appendTail(hexBuffer);
+
+        Matcher legacy = Pattern.compile("(?i)[&§]([0-9a-fk-or])").matcher(hexBuffer.toString());
+        StringBuffer output = new StringBuffer();
+        while (legacy.find()) {
+            String tag = switch (Character.toLowerCase(legacy.group(1).charAt(0))) {
+                case '0' -> "black";
+                case '1' -> "dark_blue";
+                case '2' -> "dark_green";
+                case '3' -> "dark_aqua";
+                case '4' -> "dark_red";
+                case '5' -> "dark_purple";
+                case '6' -> "gold";
+                case '7' -> "gray";
+                case '8' -> "dark_gray";
+                case '9' -> "blue";
+                case 'a' -> "green";
+                case 'b' -> "aqua";
+                case 'c' -> "red";
+                case 'd' -> "light_purple";
+                case 'e' -> "yellow";
+                case 'f' -> "white";
+                case 'k' -> "obfuscated";
+                case 'l' -> "bold";
+                case 'm' -> "strikethrough";
+                case 'n' -> "underlined";
+                case 'o' -> "italic";
+                default -> "reset";
+            };
+            legacy.appendReplacement(output, "<" + tag + ">");
+        }
+        legacy.appendTail(output);
+        return output.toString();
     }
 
     private static String toMinecraftHex(String hexValue) {

@@ -29,7 +29,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.BlockDisplay;
-import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.EnderCrystal;
@@ -888,7 +887,7 @@ public final class EndWarService implements Listener {
             return;
         }
         UUID uuid = event.getEntity().getUniqueId();
-        if (uuid.equals(activeSupplyDrop.chickenUuid()) || uuid.equals(activeSupplyDrop.displayUuid())) {
+        if (uuid.equals(activeSupplyDrop.displayUuid())) {
             event.setCancelled(true);
         }
     }
@@ -1315,9 +1314,7 @@ public final class EndWarService implements Listener {
         for (int index = 0; index < Math.min(6, candidates.size()); index++) {
             Player target = candidates.get(index);
             endWorld.strikeLightningEffect(target.getLocation());
-            target.removePotionEffect(PotionEffectType.LEVITATION);
-            target.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 60, 0, false, true, true));
-            target.getWorld().spawnParticle(Particle.DRAGON_BREATH, target.getLocation(), 24, 1.5D, 0.2D, 1.5D, 0.02D);
+            target.getWorld().spawnParticle(Particle.DRAGON_BREATH, target.getLocation(), 24, 1.5D, 0.2D, 1.5D, 0.02D, 1.0F);
         }
         return true;
     }
@@ -1358,18 +1355,6 @@ public final class EndWarService implements Listener {
         Location ground = findGround(dropCenter.clone());
         Location spawnLocation = ground.clone().add(0.0D, supplyDropSpawnHeight, 0.0D);
 
-        Chicken chicken = endWorld.spawn(spawnLocation, Chicken.class, entity -> {
-            entity.setAI(false);
-            entity.setGravity(false);
-            entity.setInvisible(true);
-            entity.setInvulnerable(true);
-            entity.setSilent(true);
-            entity.setPersistent(false);
-            entity.setAdult();
-            entity.setGlowing(true);
-            entity.setCollidable(false);
-        });
-
         BlockDisplay display = endWorld.spawn(spawnLocation.clone().add(0.0D, -0.2D, 0.0D), BlockDisplay.class, blockDisplay -> {
             blockDisplay.setPersistent(false);
             blockDisplay.setInvulnerable(true);
@@ -1382,10 +1367,9 @@ public final class EndWarService implements Listener {
                     new Quaternionf()
             ));
         });
-        chicken.addPassenger(display);
         Inventory loot = Bukkit.createInventory(new SupplyDropHolder(UUID.randomUUID()), 27, TextUtil.component("&5&lSupply Drop"));
         fillSupplyDropInventory(loot);
-        activeSupplyDrop = new SupplyDrop(chicken.getUniqueId(), display.getUniqueId(), ground, loot, false);
+        activeSupplyDrop = new SupplyDrop(display.getUniqueId(), ground, loot, false);
         announceChatAndTitle(
                 "supply-drop-spawned",
                 "supply-drop-title",
@@ -1400,16 +1384,15 @@ public final class EndWarService implements Listener {
     }
 
     private void updateFallingSupplyDrop(SupplyDrop drop) {
-        Chicken chicken = Bukkit.getEntity(drop.chickenUuid()) instanceof Chicken entity ? entity : null;
         Entity display = Bukkit.getEntity(drop.displayUuid());
-        if (chicken == null || !chicken.isValid() || display == null || !display.isValid()) {
+        if (!(display instanceof BlockDisplay blockDisplay) || !blockDisplay.isValid()) {
             cleanupSupplyDrop(drop);
             activeSupplyDrop = null;
             return;
         }
 
-        Location current = chicken.getLocation();
-        if (current.getY() <= drop.targetLocation().getY() + 1.0D || chicken.isOnGround()) {
+        Location current = blockDisplay.getLocation();
+        if (current.getY() <= drop.targetLocation().getY() + 1.0D) {
             landSupplyDrop(drop);
             return;
         }
@@ -1421,10 +1404,11 @@ public final class EndWarService implements Listener {
             descent = Math.min(descent, 0.8D);
         }
         double sway = Math.min(supplyDropSwayRadius, Math.max(0.0D, distanceRemaining / 10.0D));
-        double offsetX = Math.sin(chicken.getTicksLived() / 6.0D) * sway;
-        double offsetZ = Math.cos(chicken.getTicksLived() / 7.0D) * sway;
+        long visualTick = System.currentTimeMillis() / Math.max(1L, visualUpdateIntervalTicks * 50L);
+        double offsetX = Math.sin(visualTick / 3.0D) * sway;
+        double offsetZ = Math.cos(visualTick / 3.5D) * sway;
         double nextY = Math.max(targetY, current.getY() - descent);
-        chicken.teleport(new Location(
+        blockDisplay.teleport(new Location(
                 current.getWorld(),
                 drop.targetLocation().getX() + offsetX,
                 nextY,
@@ -1435,12 +1419,12 @@ public final class EndWarService implements Listener {
     }
 
     private void renderSupplyDrop(SupplyDrop drop) {
-        Chicken chicken = Bukkit.getEntity(drop.chickenUuid()) instanceof Chicken entity ? entity : null;
-        if (chicken == null || !chicken.isValid()) {
+        Entity display = Bukkit.getEntity(drop.displayUuid());
+        if (!(display instanceof BlockDisplay blockDisplay) || !blockDisplay.isValid()) {
             return;
         }
 
-        Location chestLocation = chicken.getLocation().clone();
+        Location chestLocation = blockDisplay.getLocation().clone();
         Location canopyCenter = chestLocation.clone().add(0.0D, 1.6D, 0.0D);
         chestLocation.getWorld().spawnParticle(Particle.CLOUD, canopyCenter, 8, 0.22D, 0.08D, 0.22D, 0.0D);
 
@@ -1461,21 +1445,17 @@ public final class EndWarService implements Listener {
         }
 
         Location center = hotspot.center().clone().add(0.0D, hotspotVisualHeight, 0.0D);
-        endWorld.spawnParticle(Particle.DRAGON_BREATH, center, hotspotCloudParticleCount, hotspot.radius() / 2.1D, 0.15D, hotspot.radius() / 2.1D, 0.0D);
+        endWorld.spawnParticle(Particle.DRAGON_BREATH, center, hotspotCloudParticleCount, hotspot.radius() / 2.1D, 0.15D, hotspot.radius() / 2.1D, 0.0D, 1.0F);
         endWorld.spawnParticle(Particle.WITCH, center, Math.max(6, hotspotCloudParticleCount / 3), hotspot.radius() / 2.5D, 0.1D, hotspot.radius() / 2.5D, 0.01D);
 
         for (int index = 0; index < hotspotRingParticlePoints; index++) {
             double angle = (Math.PI * 2.0D * index) / hotspotRingParticlePoints;
             Location point = center.clone().add(Math.cos(angle) * hotspot.radius(), 0.0D, Math.sin(angle) * hotspot.radius());
-            endWorld.spawnParticle(Particle.DRAGON_BREATH, point, 2, 0.12D, 0.04D, 0.12D, 0.0D);
+            endWorld.spawnParticle(Particle.DRAGON_BREATH, point, 2, 0.12D, 0.04D, 0.12D, 0.0D, 1.0F);
         }
     }
 
     private void landSupplyDrop(SupplyDrop drop) {
-        Chicken chicken = Bukkit.getEntity(drop.chickenUuid()) instanceof Chicken entity ? entity : null;
-        if (chicken != null) {
-            chicken.remove();
-        }
         Entity display = Bukkit.getEntity(drop.displayUuid());
         if (display != null) {
             display.remove();
@@ -1743,6 +1723,13 @@ public final class EndWarService implements Listener {
                 location.setWorld(endWorld);
             }
 
+            for (EnderCrystal existing : endWorld.getNearbyEntities(location, 1.0D, 2.0D, 1.0D).stream()
+                    .filter(EnderCrystal.class::isInstance)
+                    .map(EnderCrystal.class::cast)
+                    .toList()) {
+                existing.remove();
+            }
+
             EnderCrystal crystal = endWorld.spawn(location.clone(), EnderCrystal.class, entity -> {
                 entity.setInvulnerable(true);
                 entity.setShowingBottom(true);
@@ -1914,6 +1901,7 @@ public final class EndWarService implements Listener {
     private void disableRuntimeFeature(Feature feature) {
         switch (feature) {
             case HOTSPOT_ROTATION -> hotspot = null;
+            case END_CRYSTAL_OBJECTIVES -> clearCrystalObjectives();
             case AUDIENCE_TOOLS -> {
                 closeAudienceVote(false);
                 for (Player player : Bukkit.getOnlinePlayers()) {
@@ -1943,12 +1931,17 @@ public final class EndWarService implements Listener {
         for (SupplyDrop drop : new ArrayList<>(landedSupplyDrops.values())) {
             clearSupplyDrop(drop);
         }
+        clearCrystalObjectives();
+    }
+
+    private void clearCrystalObjectives() {
         for (CrystalObjective objective : crystalObjectives.values()) {
             Entity entity = objective.crystalUuid() == null ? null : Bukkit.getEntity(objective.crystalUuid());
             if (entity != null) {
                 entity.remove();
             }
         }
+        crystalObjectives.clear();
     }
 
     private void cleanupTrackedEgg() {
@@ -1962,10 +1955,6 @@ public final class EndWarService implements Listener {
     }
 
     private void cleanupSupplyDrop(SupplyDrop drop) {
-        Entity chicken = Bukkit.getEntity(drop.chickenUuid());
-        if (chicken != null) {
-            chicken.remove();
-        }
         Entity display = Bukkit.getEntity(drop.displayUuid());
         if (display != null) {
             display.remove();
@@ -2298,9 +2287,9 @@ public final class EndWarService implements Listener {
         }
     }
 
-    private record SupplyDrop(UUID chickenUuid, UUID displayUuid, Location targetLocation, Inventory inventory, boolean landed) {
+    private record SupplyDrop(UUID displayUuid, Location targetLocation, Inventory inventory, boolean landed) {
         private SupplyDrop withLanded(boolean landed) {
-            return new SupplyDrop(chickenUuid, displayUuid, targetLocation, inventory, landed);
+            return new SupplyDrop(displayUuid, targetLocation, inventory, landed);
         }
     }
 

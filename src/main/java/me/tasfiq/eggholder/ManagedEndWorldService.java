@@ -49,6 +49,7 @@ public final class ManagedEndWorldService {
 
     private World managedWorld;
     private Location endCenter;
+    private MapBounds mapBounds;
     private List<Location> dragonCrystalLocations = List.of();
     private SpongeSchematic cachedSchematic;
     private String statusMessage = "Not prepared";
@@ -102,6 +103,7 @@ public final class ManagedEndWorldService {
         this.targetCenterZ = plugin.getConfig().getDouble("game.end-center.z", 0.5D);
         this.cachedSchematic = null;
         this.prepared = false;
+        this.mapBounds = null;
         this.unsupportedStatesLogged = false;
         refreshLoadedWorldContext();
     }
@@ -138,6 +140,12 @@ public final class ManagedEndWorldService {
 
             managedWorld = world;
             PastePlacement placement = createPlacement(world, schematic);
+            this.mapBounds = new MapBounds(
+                    placement.originX(),
+                    placement.originX() + schematic.width() - 1,
+                    placement.originZ(),
+                    placement.originZ() + schematic.length() - 1
+            );
             ensureChunksLoaded(world, placement, schematic);
             if (clearRegionFirst || forceRepaste) {
                 clearPasteRegion(world, placement, schematic);
@@ -163,6 +171,7 @@ public final class ManagedEndWorldService {
             return true;
         } catch (Exception exception) {
             prepared = false;
+            mapBounds = null;
             statusMessage = "Prepare failed: " + exception.getMessage();
             plugin.getLogger().severe("Failed to prepare the managed End world: " + exception.getMessage());
             exception.printStackTrace();
@@ -176,6 +185,10 @@ public final class ManagedEndWorldService {
 
     public Location getEndCenter() {
         return endCenter == null ? null : endCenter.clone();
+    }
+
+    public MapBounds getPreparedMapBounds() {
+        return prepared ? mapBounds : null;
     }
 
     public boolean shouldUsePedestalsForObjectives() {
@@ -217,6 +230,7 @@ public final class ManagedEndWorldService {
 
     private void refreshLoadedWorldContext() {
         this.managedWorld = worldName == null ? null : Bukkit.getWorld(worldName);
+        this.mapBounds = null;
         if (managedWorld != null) {
             this.endCenter = new Location(managedWorld, targetCenterX, targetCenterY, targetCenterZ);
             if (dragonCrystalLocations.isEmpty()) {
@@ -607,6 +621,9 @@ public final class ManagedEndWorldService {
     }
 
     private record PastePlacement(int originX, int originY, int originZ, Location centerLocation) {
+    }
+
+    public record MapBounds(int minX, int maxX, int minZ, int maxZ) {
     }
 
     private record BlockCandidate(Block block, int supportNeighbors) {
