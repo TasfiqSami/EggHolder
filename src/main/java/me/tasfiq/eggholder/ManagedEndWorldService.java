@@ -188,7 +188,24 @@ public final class ManagedEndWorldService {
     }
 
     public MapBounds getPreparedMapBounds() {
-        return prepared ? mapBounds : null;
+        if (!enabled || managedWorld == null) {
+            return null;
+        }
+        if (mapBounds == null) {
+            try {
+                SpongeSchematic schematic = loadSchematic();
+                PastePlacement placement = createPlacement(managedWorld, schematic);
+                mapBounds = new MapBounds(
+                        placement.originX(),
+                        placement.originX() + schematic.width() - 1,
+                        placement.originZ(),
+                        placement.originZ() + schematic.length() - 1
+                );
+            } catch (IOException exception) {
+                plugin.getLogger().warning("Could not determine the managed End map bounds: " + exception.getMessage());
+            }
+        }
+        return mapBounds;
     }
 
     public boolean shouldUsePedestalsForObjectives() {
