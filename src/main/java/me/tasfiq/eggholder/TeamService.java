@@ -17,7 +17,12 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.AreaEffectCloud;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.Tameable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -839,7 +844,19 @@ public final class TeamService implements Listener {
         if (entity instanceof Player player) {
             return player;
         }
-        if (entity instanceof org.bukkit.entity.Projectile projectile && projectile.getShooter() instanceof Player player) {
+        if (entity instanceof Projectile projectile && projectile.getShooter() instanceof Player player) {
+            return player;
+        }
+        if (entity instanceof Firework firework && firework.getShooter() instanceof Player player) {
+            return player;
+        }
+        if (entity instanceof AreaEffectCloud cloud && cloud.getSource() instanceof Player player) {
+            return player;
+        }
+        if (entity instanceof TNTPrimed tnt && tnt.getSource() instanceof Player player) {
+            return player;
+        }
+        if (entity instanceof Tameable tameable && tameable.getOwner() instanceof Player player) {
             return player;
         }
         return null;

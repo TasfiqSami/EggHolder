@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.AreaEffectCloud;
@@ -389,6 +390,9 @@ public final class DeadPlayerService implements Listener {
             return player;
         }
         if (entity instanceof Projectile projectile && projectile.getShooter() instanceof Player player) {
+            return player;
+        }
+        if (entity instanceof Firework firework && firework.getShooter() instanceof Player player) {
             return player;
         }
         if (entity instanceof AreaEffectCloud cloud && cloud.getSource() instanceof Player player) {

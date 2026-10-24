@@ -30,12 +30,16 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Display;
+import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.Tameable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -742,7 +746,9 @@ public final class EndWarService implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onProtectedBucketEmpty(PlayerBucketEmptyEvent event) {
         Player player = event.getPlayer();
-        Location target = event.getBlockClicked().getRelative(event.getBlockFace()).getLocation();
+        Block clicked = event.getBlockClicked();
+        Location target = clicked == null ? player.getLocation()
+                : clicked.getRelative(event.getBlockFace()).getLocation();
         if (plugin.getDeadPlayerService().isDead(player)
                 || (isGameRunning() && isEndWorld(player.getWorld())
                 && (isEntryProtected(player) || isInsideCenterRing(target)))) {
@@ -2243,6 +2249,18 @@ public final class EndWarService implements Listener {
             return player;
         }
         if (entity instanceof org.bukkit.entity.Projectile projectile && projectile.getShooter() instanceof Player player) {
+            return player;
+        }
+        if (entity instanceof Firework firework && firework.getShooter() instanceof Player player) {
+            return player;
+        }
+        if (entity instanceof AreaEffectCloud cloud && cloud.getSource() instanceof Player player) {
+            return player;
+        }
+        if (entity instanceof TNTPrimed tnt && tnt.getSource() instanceof Player player) {
+            return player;
+        }
+        if (entity instanceof Tameable tameable && tameable.getOwner() instanceof Player player) {
             return player;
         }
         return null;
