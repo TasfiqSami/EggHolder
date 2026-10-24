@@ -1,0 +1,21 @@
+# Airdrop by Yirf (https://block-display.com/bd/8073)
+# BDL BY-NC: attribution required; non-commercial use; derivatives allowed.
+parts:
+  - material: green_carpet
+    matrix: [1, 0, 0, -1, 0, 1, 0, 2.4788, 0, 0, 1, 0, 0, 0, 0, 1]
+  - material: green_carpet
+    matrix: [0.9659, 0.2588, 0, 0, -0.2588, 0.9659, 0, 2.4788, 0, 0, 1, 0, 0, 0, 0, 1]
+  - material: green_carpet
+    matrix: [1, 0, 0, -2, 0, 1, 0, 2.4788, 0, 0, 1, 0, 0, 0, 0, 1]
+  - material: green_carpet
+    matrix: [0.9659, -0.2588, 0, -2.9375, 0.2588, 0.9659, 0, 2.2288, 0, 0, 1, 0, 0, 0, 0, 1]
+  - material: chest
+    matrix: [1, 0, 0, -1.445, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+  - material: black_concrete
+    matrix: [0.0403, 1.1376, 0, -0.8225, -0.0296, 1.5487, 0, 0.8681, 0, 0, 0.05, 0.75, 0, 0, 0, 1]
+  - material: black_concrete
+    matrix: [0.0403, 1.1376, 0, -0.8287, -0.0296, 1.5487, 0, 0.8681, 0, 0, 0.05, 0.1875, 0, 0, 0, 1]
+  - material: black_concrete
+    matrix: [-0.0403, -1.1376, 0, -1.0675, -0.0296, 1.5487, 0, 0.8681, 0, 0, -0.05, 0.7994, 0, 0, 0, 1]
+  - material: black_concrete
+    matrix: [-0.0403, -1.1376, 0, -1.0675, -0.0296, 1.5487, 0, 0.8681, 0, 0, -0.05, 0.25, 0, 0, 0, 1]

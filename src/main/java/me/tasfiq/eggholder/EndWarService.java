@@ -28,8 +28,6 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.BlockDisplay;
-import org.bukkit.entity.Display;
 import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.EnderCrystal;
@@ -73,10 +71,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 public final class EndWarService implements Listener {
 
@@ -84,6 +79,7 @@ public final class EndWarService implements Listener {
     private final TeamService teamService;
     private final KitService kitService;
     private final SidebarService sidebarService;
+    private final SupplyDropModel supplyDropModel;
     private final NamespacedKey audienceItemKey;
     private final NamespacedKey trackedEggKey;
     private final NamespacedKey eggDropSourceKey;
@@ -149,7 +145,6 @@ public final class EndWarService implements Listener {
     private int supplyDropSpawnHeight;
     private double supplyDropDescentPerVisualTick;
     private double supplyDropSwayRadius;
-    private double supplyDropCanopyRadius;
     private int audienceVoteDurationSeconds;
     private int eggDropCountdownSeconds;
     private int eggBurnSeconds;
@@ -176,6 +171,11 @@ public final class EndWarService implements Listener {
         this.teamService = teamService;
         this.kitService = kitService;
         this.sidebarService = sidebarService;
+        try {
+            this.supplyDropModel = SupplyDropModel.load(plugin);
+        } catch (java.io.IOException exception) {
+            throw new IllegalStateException("Unable to load bundled supply drop model", exception);
+        }
         this.audienceItemKey = new NamespacedKey(plugin, "audience_tool_item");
         this.trackedEggKey = new NamespacedKey(plugin, "tracked_egg");
         this.eggDropSourceKey = new NamespacedKey(plugin, "tracked_egg_source");
@@ -241,7 +241,6 @@ public final class EndWarService implements Listener {
         this.supplyDropSpawnHeight = Math.max(10, config.getInt("features.supply-drops.spawn-height", 40));
         this.supplyDropDescentPerVisualTick = Math.max(0.2D, config.getDouble("features.supply-drops.descent-per-visual-tick", 1.15D));
         this.supplyDropSwayRadius = Math.max(0.0D, config.getDouble("features.supply-drops.sway-radius", 0.75D));
-        this.supplyDropCanopyRadius = Math.max(0.4D, config.getDouble("features.supply-drops.canopy-radius", 1.4D));
         this.audienceVoteDurationSeconds = Math.max(10, config.getInt("features.audience-tools.vote-duration-seconds", 30));
         this.eggDropCountdownSeconds = Math.max(0, config.getInt("features.egg-drop-countdown.seconds", 5));
         this.eggBurnSeconds = Math.max(15, config.getInt("features.egg-burn-timer.seconds", 90));
@@ -963,7 +962,7 @@ public final class EndWarService implements Listener {
             return;
         }
         UUID uuid = event.getEntity().getUniqueId();
-        if (uuid.equals(activeSupplyDrop.displayUuid())) {
+        if (activeSupplyDrop.displayUuids().contains(uuid)) {
             event.setCancelled(true);
         }
     }
@@ -1041,7 +1040,6 @@ public final class EndWarService implements Listener {
 
         if (activeSupplyDrop != null && !activeSupplyDrop.landed()) {
             updateFallingSupplyDrop(activeSupplyDrop);
-            renderSupplyDrop(activeSupplyDrop);
         }
 
         for (CrystalObjective objective : crystalObjectives.values()) {
@@ -1442,23 +1440,17 @@ public final class EndWarService implements Listener {
             plugin.getMessageManager().broadcastPrefixed("supply-drop-no-safe-location", Map.of());
             return false;
         }
-        Location spawnLocation = ground.clone().add(0.0D, supplyDropSpawnHeight, 0.0D);
-
-        BlockDisplay display = endWorld.spawn(spawnLocation.clone().add(0.0D, -0.2D, 0.0D), BlockDisplay.class, blockDisplay -> {
-            blockDisplay.setPersistent(false);
-            blockDisplay.setInvulnerable(true);
-            blockDisplay.setBlock(Bukkit.createBlockData(Material.ENDER_CHEST));
-            blockDisplay.setBillboard(Display.Billboard.FIXED);
-            blockDisplay.setTransformation(new Transformation(
-                    new Vector3f(),
-                    new Quaternionf(),
-                    new Vector3f(0.9F, 0.9F, 0.9F),
-                    new Quaternionf()
-            ));
-        });
+        double spawnY = ground.getY() + supplyDropSpawnHeight;
+        List<UUID> modelEntities;
+        try {
+            modelEntities = supplyDropModel.spawn(endWorld, supplyDropModelOrigin(ground, spawnY));
+        } catch (RuntimeException exception) {
+            plugin.getLogger().log(java.util.logging.Level.SEVERE, "Could not spawn the bundled supply drop model", exception);
+            return false;
+        }
         Inventory loot = Bukkit.createInventory(new SupplyDropHolder(UUID.randomUUID()), 27, TextUtil.component("&5&lSupply Drop"));
         fillSupplyDropInventory(loot);
-        activeSupplyDrop = new SupplyDrop(display.getUniqueId(), ground, loot, false);
+        activeSupplyDrop = new SupplyDrop(modelEntities, ground, loot, false, spawnY);
         announceChatAndTitle(
                 "supply-drop-spawned",
                 "supply-drop-title",
@@ -1534,21 +1526,13 @@ public final class EndWarService implements Listener {
     }
 
     private void updateFallingSupplyDrop(SupplyDrop drop) {
-        Entity display = Bukkit.getEntity(drop.displayUuid());
-        if (!(display instanceof BlockDisplay blockDisplay) || !blockDisplay.isValid()) {
-            cleanupSupplyDrop(drop);
-            activeSupplyDrop = null;
-            return;
-        }
-
-        Location current = blockDisplay.getLocation();
-        if (current.getY() <= drop.targetLocation().getY() + 1.0D) {
+        double targetY = drop.targetLocation().getY();
+        if (drop.currentY() <= targetY) {
             landSupplyDrop(drop);
             return;
         }
 
-        double targetY = drop.targetLocation().getY() + 1.0D;
-        double distanceRemaining = current.getY() - targetY;
+        double distanceRemaining = drop.currentY() - targetY;
         double descent = Math.max(0.25D, supplyDropDescentPerVisualTick);
         if (distanceRemaining < 6.0D) {
             descent = Math.min(descent, 0.8D);
@@ -1557,36 +1541,14 @@ public final class EndWarService implements Listener {
         long visualTick = System.currentTimeMillis() / Math.max(1L, visualUpdateIntervalTicks * 50L);
         double offsetX = Math.sin(visualTick / 3.0D) * sway;
         double offsetZ = Math.cos(visualTick / 3.5D) * sway;
-        double nextY = Math.max(targetY, current.getY() - descent);
-        blockDisplay.teleport(new Location(
-                current.getWorld(),
-                drop.targetLocation().getX() + offsetX,
-                nextY,
-                drop.targetLocation().getZ() + offsetZ,
-                current.getYaw(),
-                current.getPitch()
-        ));
-    }
-
-    private void renderSupplyDrop(SupplyDrop drop) {
-        Entity display = Bukkit.getEntity(drop.displayUuid());
-        if (!(display instanceof BlockDisplay blockDisplay) || !blockDisplay.isValid()) {
+        double nextY = Math.max(targetY, drop.currentY() - descent);
+        Location nextOrigin = supplyDropModelOrigin(drop.targetLocation().clone().add(offsetX, 0.0D, offsetZ), nextY);
+        if (!supplyDropModel.move(drop.displayUuids(), nextOrigin)) {
+            cleanupSupplyDrop(drop);
+            activeSupplyDrop = null;
             return;
         }
-
-        Location chestLocation = blockDisplay.getLocation().clone();
-        Location canopyCenter = chestLocation.clone().add(0.0D, 1.6D, 0.0D);
-        chestLocation.getWorld().spawnParticle(Particle.CLOUD, canopyCenter, 8, 0.22D, 0.08D, 0.22D, 0.0D);
-
-        int points = 10;
-        for (int index = 0; index < points; index++) {
-            double angle = (Math.PI * 2.0D * index) / points;
-            double radius = supplyDropCanopyRadius;
-            Location edge = canopyCenter.clone().add(Math.cos(angle) * radius, 0.0D, Math.sin(angle) * radius);
-            chestLocation.getWorld().spawnParticle(Particle.CLOUD, edge, 2, 0.06D, 0.03D, 0.06D, 0.0D);
-            Location line = chestLocation.clone().add(Math.cos(angle) * 0.45D, 0.65D, Math.sin(angle) * 0.45D);
-            chestLocation.getWorld().spawnParticle(Particle.END_ROD, line, 1, 0.02D, 0.18D, 0.02D, 0.0D);
-        }
+        activeSupplyDrop = drop.withCurrentY(nextY);
     }
 
     private void renderHotspot() {
@@ -1606,11 +1568,6 @@ public final class EndWarService implements Listener {
     }
 
     private void landSupplyDrop(SupplyDrop drop) {
-        Entity display = Bukkit.getEntity(drop.displayUuid());
-        if (display != null) {
-            display.remove();
-        }
-
         Block block = drop.targetLocation().getBlock();
         block.setType(Material.ENDER_CHEST, false);
         if (block.getState() instanceof Container container) {
@@ -1628,6 +1585,7 @@ public final class EndWarService implements Listener {
     }
 
     private void clearSupplyDrop(SupplyDrop drop) {
+        supplyDropModel.remove(drop.displayUuids());
         Block block = drop.targetLocation().getBlock();
         landedSupplyDrops.remove(BlockKey.of(block));
         if (block.getType() == Material.ENDER_CHEST) {
@@ -2156,10 +2114,12 @@ public final class EndWarService implements Listener {
     }
 
     private void cleanupSupplyDrop(SupplyDrop drop) {
-        Entity display = Bukkit.getEntity(drop.displayUuid());
-        if (display != null) {
-            display.remove();
-        }
+        supplyDropModel.remove(drop.displayUuids());
+    }
+
+    private Location supplyDropModelOrigin(Location target, double y) {
+        // The model's source origin is left of its center by about two blocks.
+        return new Location(endWorld, target.getX() + 2.0D, y, target.getZ() - 0.5D);
     }
 
     private void cancelTasks() {
@@ -2500,9 +2460,13 @@ public final class EndWarService implements Listener {
         }
     }
 
-    private record SupplyDrop(UUID displayUuid, Location targetLocation, Inventory inventory, boolean landed) {
+    private record SupplyDrop(List<UUID> displayUuids, Location targetLocation, Inventory inventory, boolean landed, double currentY) {
         private SupplyDrop withLanded(boolean landed) {
-            return new SupplyDrop(displayUuid, targetLocation, inventory, landed);
+            return new SupplyDrop(displayUuids, targetLocation, inventory, landed, currentY);
+        }
+
+        private SupplyDrop withCurrentY(double currentY) {
+            return new SupplyDrop(displayUuids, targetLocation, inventory, landed, currentY);
         }
     }
 

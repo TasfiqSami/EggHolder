@@ -30,9 +30,14 @@ This is the continuation note for future Codex sessions. Read **Current status**
 - Added shared framed GUI styling and updated the team, kit, teleporter, audience, and supply-cache screens. Fixed audience voting to report effects as successful only when the effect actually starts. Feature toggles now reset active overtime/merciless/no-escape/panic state when disabled.
 - `TextUtil` now parses legacy `&`/`§` color and style codes, legacy RGB, hex colors, and Adventure MiniMessage tags; `MessageManager` sends rich components so gradients and click/hover tags are preserved. Updated the message prefix and selected event announcements to use gradients. README now documents the supported formats.
 - Follow-up bypass audit: eliminated players are now blocked from entity interaction and attacks attributed through projectiles, fireworks, lingering clouds, primed TNT, and tamed mobs. Entry protection also cancels environmental damage and bucket/fire actions. The center no-build ring now blocks bucket placement, ignition, crystals, spawn eggs, boats/minecarts, and display entities in addition to block placement. No Escape blocks Ender Pearl teleports already in flight and removes nearby holder-fired wind charges at activation.
-- Changes are unreleased. `git diff --check` passed. `mvn -B -DskipTests package` passed using the installed Java 21 toolchain; tests were skipped. No Paper/Leaf runtime test has been performed. Validate menus, formatting, drops around map edges, and all feature toggles before release.
+- Added the BDEngine catalog model `Airdrop` (model 8073) by Yirf as the supply-drop visual. Its nine display parts are bundled in `src/main/resources/supply-drop-model.yml`, spawned and moved together as individually tracked BlockDisplays, and removed by their UUIDs. The world does not call BDE at runtime. Attribution and the model's BDL BY-NC terms are documented in `README.md`; commercial use needs separate permission from the author. Java 21 `mvn -B clean -DskipTests package` passed on 2026-10-24; tests and live Paper/Leaf rendering were not run.
+- Release candidate v2.2.3 is prepared locally. `git diff --check` passed. `mvn -B clean -DskipTests package` passed using Java 21; tests were skipped. No Paper/Leaf runtime test has been performed. Jar SHA-256: `6ED03605118D91650AB9427D33CCC92716ED90B91BD1807710A5AD606711E960`. GitHub publication has not completed yet.
 
-## Latest work in progress — v2.2.2
+## Latest work in progress — v2.2.3
+
+v2.2.3 release candidate includes the locally bundled BDEngine airdrop model. The GitHub release/tag and Maven stable package still need publication.
+
+## Latest completed release — v2.2.2
 
 v2.2.2 is built, runtime-checked, pushed, and released. It addresses issues found by launching a real Paper 1.21.11 server:
 

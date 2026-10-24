@@ -452,7 +452,6 @@ features:
     spawn-height: 40
     descent-per-visual-tick: 1.15
     sway-radius: 0.75
-    canopy-radius: 1.4
     protection-radius: 4.0
     loot:
       anchor-cache:

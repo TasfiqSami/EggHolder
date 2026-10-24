@@ -55,7 +55,7 @@ So even if someone does not know the event beforehand, they can think of it like
 
 ## Downloads
 
-- [GitHub release 2.2.2](https://github.com/TasfiqSami/EggHolder/releases/tag/v2.2.2) — includes `EggHolder.jar`.
+- [GitHub release 2.2.3](https://github.com/TasfiqSami/EggHolder/releases/tag/v2.2.3) — includes `EggHolder.jar`.
 - [Modrinth 2.2.2 jar](https://cdn.modrinth.com/data/jm0TqH0V/versions/KeGPGUrf/EggHolder.jar). The existing Modrinth project is still being reviewed, so its public listing may not appear in search yet.
 
 ### Server Software Compatibility
@@ -97,6 +97,12 @@ Important operator note:
 - startup preparation edits the configured world; with `clear-region-first: true`, blocks inside the schematic bounds are cleared before the map is pasted
 - set `prepare-on-startup: false` to defer preparation until the match starts, and set `clear-region-first: false` to overlay the schematic without clearing its bounds
 - admins can rebuild or inspect the managed map in-game with `/endwar world ...`
+
+## Version 2.2.3
+
+- Replaced the generic falling supply-drop display with the nine-part BDEngine Airdrop model by Yirf; the visual remains after landing and is removed with the cache.
+- Bundled the display model locally, with per-drop entity tracking so movement and cleanup are limited to that drop.
+- Documented the model attribution and BDL BY-NC terms.
 
 ## Version 2.2.2
 
@@ -439,10 +445,12 @@ The plugin can call in public loot drops from the sky.
 
 Default implementation:
 
-- a falling Ender Chest style drop
+- a falling, multi-part Block Display airdrop model
 - publicly announced coordinates
 - protected until landing
 - configurable loot table
+
+The bundled airdrop appearance is **Airdrop** by **Yirf**, model 8073 on [Block Display Models](https://block-display.com/bd/8073). It is adapted from the model's published display transforms and distributed under **BDL BY-NC** (attribution required, non-commercial use, derivatives allowed). The model license applies to this asset; it does not change the license of EggHolder itself.
 
 ## Commands
 
@@ -664,7 +672,7 @@ target/EggHolder.jar
 
 ## GitHub Packages (Maven)
 
-The Maven artifact is published to [GitHub Packages](https://github.com/TasfiqSami/EggHolder/packages) for developers who want to consume EggHolder as a Maven dependency. A push runs one workflow: it builds against Paper API 1.20.6 and 1.21.11, then publishes a unique CI package only after both builds pass. Pull requests run both builds but do not publish. CI versions follow the release version in `pom.xml`, for example `2.2.2-ci.42.1`. To publish a stable Maven version, run **EggHolder CI and Package** from GitHub Actions using **Run workflow** and enter the release version (for example `2.2.2`); leave it blank to publish a unique CI version.
+The Maven artifact is published to [GitHub Packages](https://github.com/TasfiqSami/EggHolder/packages) for developers who want to consume EggHolder as a Maven dependency. A push runs one workflow: it builds against Paper API 1.20.6 and 1.21.11, then publishes a unique CI package only after both builds pass. Pull requests run both builds but do not publish. CI versions follow the release version in `pom.xml`, for example `2.2.3-ci.42.1`. To publish a stable Maven version, run **EggHolder CI and Package** from GitHub Actions using **Run workflow** and enter the release version (for example `2.2.3`); leave it blank to publish a unique CI version.
 
 Coordinates for the current release:
 
@@ -672,7 +680,7 @@ Coordinates for the current release:
 <dependency>
     <groupId>me.tasfiq</groupId>
     <artifactId>eggholder</artifactId>
-    <version>2.2.2</version>
+    <version>2.2.3</version>
 </dependency>
 ```
 
