@@ -56,7 +56,7 @@ So even if someone does not know the event beforehand, they can think of it like
 ## Downloads
 
 - [GitHub release 2.2.3](https://github.com/TasfiqSami/EggHolder/releases/tag/v2.2.3) — includes `EggHolder.jar`.
-- [Modrinth 2.2.2 jar](https://cdn.modrinth.com/data/jm0TqH0V/versions/KeGPGUrf/EggHolder.jar). The existing Modrinth project is still being reviewed, so its public listing may not appear in search yet.
+- [Modrinth 2.2.3 jar](https://cdn.modrinth.com/data/jm0TqH0V/versions/MUrL8MbB/EggHolder.jar). The existing Modrinth project is still being reviewed, so its public listing may not appear in search yet.
 
 ### Server Software Compatibility
 

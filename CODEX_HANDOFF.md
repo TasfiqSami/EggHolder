@@ -98,7 +98,8 @@ Communication preference: execute authorized work instead of repeatedly asking f
 - Existing project: `jm0TqH0V`, slug `eggholder`, expected public route `https://modrinth.com/plugin/eggholder`.
 - Version 2.0.0 ID: `3KmzUZKb`; version 2.1.0 ID: `laOokhbA`.
 - Last known 2.1.0 metadata advertised Paper/Purpur and Minecraft 1.20.6 through 1.21.11; uploaded artifact hash was verified in that session.
-- Last known review status was project `processing`, approval requested. Project page/API content edits previously failed during review. Check current state before updates.
+- Modrinth v2.2.3 uploaded 2026-10-24 as version ID `MUrL8MbB`, status `listed`, Paper/Purpur, Minecraft 1.20.6 through 1.21.11. Direct jar: `https://cdn.modrinth.com/data/jm0TqH0V/versions/MUrL8MbB/EggHolder.jar`. Uploaded SHA-1 and SHA-512 match the GitHub release jar.
+- Project `jm0TqH0V` remains `processing` with `requested_status: approved`; its API still reports `project_type: mod`. Previous project edits failed during review, and the public plugin route/type correction remains unresolved. Check project approval and listing before further Modrinth edits; do not duplicate v2.2.3.
 - Encrypted token file: `%LOCALAPPDATA%\Modrinth\eggholder-token.dpapi`. Preserve it. Never echo decrypted content or persist it anywhere. A token was previously pasted in chat; do not copy it. Use only an authorized local credential mechanism if Modrinth publishing is later requested.
 
 ## Project background / previous fixes
