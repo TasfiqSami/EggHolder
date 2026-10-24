@@ -29,7 +29,7 @@ This is the continuation note for future Codex sessions. Read **Current status**
 - Added prepared schematic bounds to `ManagedEndWorldService`; supply drop locations now sample safe ground within those bounds (and inside the world border), with a warning/message if no safe landing point is found. Non-managed End worlds sample within the configured arena scatter radius and world border.
 - Added shared framed GUI styling and updated the team, kit, teleporter, audience, and supply-cache screens. Fixed audience voting to report effects as successful only when the effect actually starts. Feature toggles now reset active overtime/merciless/no-escape/panic state when disabled.
 - `TextUtil` now parses legacy `&`/`§` color and style codes, legacy RGB, hex colors, and Adventure MiniMessage tags; `MessageManager` sends rich components so gradients and click/hover tags are preserved. Updated the message prefix and selected event announcements to use gradients. README now documents the supported formats.
-- Changes are uncommitted and unreleased. `git diff --check` passed. A `mvn -B -DskipTests package` compile was attempted but this workspace currently runs Java 17, while the project requires Java 21 (`release version 21 not supported`). No Paper/Leaf runtime test has been performed. Build with Java 21 and validate menus, formatting, drops around map edges, and all feature toggles before release.
+- Changes are unreleased. `git diff --check` passed. `mvn -B -DskipTests package` passed using the installed Java 21 toolchain; tests were skipped. No Paper/Leaf runtime test has been performed. Validate menus, formatting, drops around map edges, and all feature toggles before release.
 
 ## Latest work in progress — v2.2.2
 

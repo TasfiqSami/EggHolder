@@ -1390,6 +1390,9 @@ public final class EndWarService implements Listener {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         ManagedEndWorldService managedEnd = plugin.getManagedEndWorldService();
         ManagedEndWorldService.MapBounds bounds = managedEnd == null ? null : managedEnd.getPreparedMapBounds();
+        if (managedEnd != null && managedEnd.isEnabled() && bounds == null) {
+            return null;
+        }
 
         if (bounds != null) {
             int insetX = Math.min(8, Math.max(0, (bounds.maxX() - bounds.minX()) / 4));
