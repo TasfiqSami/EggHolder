@@ -35,12 +35,16 @@ import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -56,6 +60,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -713,6 +718,13 @@ public final class EndWarService implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onEntryProtectedEnvironmentalDamage(EntityDamageEvent event) {
+        if (event.getEntity() instanceof Player victim && isEntryProtected(victim)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onProtectedBuild(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         if (!isGameRunning() || !isEndWorld(event.getBlockPlaced().getWorld())) {
@@ -725,6 +737,36 @@ public final class EndWarService implements Listener {
         }
 
         placedEndBlocks.add(BlockKey.of(event.getBlockPlaced()));
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onProtectedBucketEmpty(PlayerBucketEmptyEvent event) {
+        Player player = event.getPlayer();
+        Location target = event.getBlockClicked().getRelative(event.getBlockFace()).getLocation();
+        if (plugin.getDeadPlayerService().isDead(player)
+                || (isGameRunning() && isEndWorld(player.getWorld())
+                && (isEntryProtected(player) || isInsideCenterRing(target)))) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onProtectedBucketFill(PlayerBucketFillEvent event) {
+        Player player = event.getPlayer();
+        if (plugin.getDeadPlayerService().isDead(player)
+                || (isGameRunning() && isEndWorld(player.getWorld()) && isEntryProtected(player))) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onProtectedIgnite(BlockIgniteEvent event) {
+        Player player = event.getPlayer();
+        if (player != null && (plugin.getDeadPlayerService().isDead(player)
+                || (isGameRunning() && isEndWorld(event.getBlock().getWorld())
+                && (isEntryProtected(player) || isInsideCenterRing(event.getBlock().getLocation()))))) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -761,9 +803,24 @@ public final class EndWarService implements Listener {
             return;
         }
 
+        if (plugin.getDeadPlayerService().isDead(player)) {
+            return;
+        }
+
         if (isGameRunning() && isEndWorld(player.getWorld()) && isEntryProtected(player)) {
             event.setCancelled(true);
             return;
+        }
+
+        if (isGameRunning() && isEndWorld(player.getWorld()) && isPlacementOrIgnitionItem(event.getItem())) {
+            Block clicked = event.getClickedBlock();
+            Location target = clicked == null
+                    ? player.getLocation()
+                    : clicked.getRelative(event.getBlockFace()).getLocation();
+            if (isInsideCenterRing(target)) {
+                event.setCancelled(true);
+                return;
+            }
         }
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock() != null) {
@@ -781,6 +838,17 @@ public final class EndWarService implements Listener {
                 event.setCancelled(true);
                 plugin.getMessageManager().sendPrefixed(player, "no-escape-active");
             }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onHolderPearlTeleport(PlayerTeleportEvent event) {
+        Player player = event.getPlayer();
+        if (event.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL
+                && plugin.getEggHolderService().isHolder(player)
+                && isNoEscapeTriggered()) {
+            event.setCancelled(true);
+            plugin.getMessageManager().sendPrefixed(player, "no-escape-active");
         }
     }
 
@@ -1049,8 +1117,20 @@ public final class EndWarService implements Listener {
         Player holder = Bukkit.getPlayer(currentHolderId);
         if (holder != null) {
             applyPotionEffects(holder, noEscapeEffects);
+            cancelPendingWindCharges(holder);
         }
         announceChatAndTitle("no-escape-started", "no-escape-title", "no-escape-subtitle", Map.of("%player%", plugin.getEggHolderService().getCurrentHolderName() == null ? "Unknown" : plugin.getEggHolderService().getCurrentHolderName()));
+    }
+
+    private void cancelPendingWindCharges(Player holder) {
+        for (Entity nearby : holder.getNearbyEntities(64.0D, 64.0D, 64.0D)) {
+            if (nearby instanceof Projectile projectile
+                    && "WIND_CHARGE".equals(projectile.getType().name())
+                    && projectile.getShooter() instanceof Player shooter
+                    && shooter.getUniqueId().equals(holder.getUniqueId())) {
+                projectile.remove();
+            }
+        }
     }
 
     private boolean isNoEscapeTriggered() {
@@ -1973,6 +2053,25 @@ public final class EndWarService implements Listener {
                 && isFeatureEnabled(Feature.CENTER_NO_BUILD_RING)
                 && isEndWorld(location.getWorld())
                 && location.distanceSquared(endCenter) <= centerNoBuildRadius * centerNoBuildRadius;
+    }
+
+    private boolean isPlacementOrIgnitionItem(ItemStack item) {
+        if (item == null || item.getType().isAir()) {
+            return false;
+        }
+        Material type = item.getType();
+        String name = type.name();
+        return type == Material.END_CRYSTAL
+                || type == Material.FLINT_AND_STEEL
+                || type == Material.FIRE_CHARGE
+                || type == Material.ARMOR_STAND
+                || type == Material.ITEM_FRAME
+                || type == Material.GLOW_ITEM_FRAME
+                || type == Material.PAINTING
+                || (name.endsWith("_BUCKET") && type != Material.MILK_BUCKET)
+                || name.endsWith("_SPAWN_EGG")
+                || name.endsWith("_BOAT")
+                || name.endsWith("_MINECART");
     }
 
     private boolean isFeatureEnabled(Feature feature) {

@@ -12,8 +12,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.AreaEffectCloud;
+import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.Tameable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -28,6 +32,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -285,15 +290,15 @@ public final class DeadPlayerService implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onDeadPlayerAttack(EntityDamageByEntityEvent event) {
-        Player attacker = null;
-        if (event.getDamager() instanceof Player player) {
-            attacker = player;
-        } else if (event.getDamager() instanceof Projectile projectile
-                && projectile.getShooter() instanceof Player player) {
-            attacker = player;
-        }
-
+        Player attacker = getResponsiblePlayer(event.getDamager());
         if (attacker != null && isDead(attacker)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onDeadPlayerEntityInteract(PlayerInteractEntityEvent event) {
+        if (isDead(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
@@ -377,6 +382,25 @@ public final class DeadPlayerService implements Listener {
         }
 
         event.setCancelled(true);
+    }
+
+    private Player getResponsiblePlayer(Entity entity) {
+        if (entity instanceof Player player) {
+            return player;
+        }
+        if (entity instanceof Projectile projectile && projectile.getShooter() instanceof Player player) {
+            return player;
+        }
+        if (entity instanceof AreaEffectCloud cloud && cloud.getSource() instanceof Player player) {
+            return player;
+        }
+        if (entity instanceof TNTPrimed tnt && tnt.getSource() instanceof Player player) {
+            return player;
+        }
+        if (entity instanceof Tameable tameable && tameable.getOwner() instanceof Player player) {
+            return player;
+        }
+        return null;
     }
 
     private void applyDeadState(Player player) {
