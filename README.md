@@ -1,4 +1,4 @@
-# EggHolder / End War
+![EggHolder / End War](https://capsule-render.vercel.app/api?type=blur&height=300&color=gradient&section=header&reversal=false&text=EggHolder&textBg=false&fontSize=70&fontAlign=50&fontAlignY=50&rotate=0&strokeWidth=0&desc=plugin+for+hosting+competitive+End+War+events%2C+featuring+Dragon+Egg+tracking.&descSize=20&descAlign=50&descAlignY=70)
 
 `EggHolder` is a Paper plugin for running a high-pressure End PvP event where one player carries the Dragon Egg and becomes the main target for the entire server.
 
