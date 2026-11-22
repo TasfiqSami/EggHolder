@@ -72,6 +72,13 @@ class ResourceContractTest {
         assertNull(SpongeSchematic.renamedLegacyBlockState("minecraft:iron_chain[axis=x]"));
     }
 
+    @Test
+    void teleporterFeedbackMessagesAreConfigured() {
+        YamlConfiguration messages = load("messages.yml");
+        assertNotNull(messages.getString("teleporter-teleported"));
+        assertNotNull(messages.getString("teleporter-failed"));
+    }
+
     private YamlConfiguration load(String name) {
         InputStream stream = getClass().getClassLoader().getResourceAsStream(name);
         assertNotNull(stream, "Missing bundled resource " + name);

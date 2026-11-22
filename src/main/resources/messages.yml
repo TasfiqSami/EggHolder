@@ -29,6 +29,7 @@ revive-disabled: "&cRevives are disabled during Merciless Endgame."
 teleporter-no-targets: "&cThere are no alive players to teleport to."
 teleporter-target-unavailable: "&cThat player is no longer available."
 teleporter-teleported: "&aTeleported to %player%."
+teleporter-failed: "&cTeleportation was blocked. Try again or contact a staff member."
 
 item-overflow: "&e%item% could not fit in the inventory or ender chest."
 
