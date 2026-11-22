@@ -98,7 +98,11 @@ public final class TeleportMenuListener implements Listener {
             return;
         }
 
-        player.teleport(target.getLocation());
+        if (!player.teleport(target.getLocation())) {
+            plugin.getMessageManager().sendPrefixed(player, "teleporter-failed");
+            return;
+        }
+
         plugin.getMessageManager().sendPrefixed(
                 player,
                 "teleporter-teleported",
